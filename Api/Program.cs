@@ -1,34 +1,72 @@
+using Api.DependencyInjection;
+using Api.Middlewares;
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using LuxuzDev.PersonalLogger;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region PersonalLoggerConfiguration
+
+PersonalLogger.Initialize();
+
+#endregion
+
+
+#region ServicesInjection
+
+builder.Services
+    .AddApplicationServices(builder.Configuration)
+    .AddAutoMapperServices(builder.Configuration)
+    .AddExternalServices(builder.Configuration)
+    .AddInfrastructureServices(builder.Configuration);
+
+#endregion
+
+
+#region SwaggerConfiguration
+
+builder.Services.SwaggerDocument(o =>
+    o.DocumentSettings = s =>
+    {
+        s.Title = "My API";
+        s.Version = "v1";
+        s.Description = "My API description";
+    }
+);
+
+#endregion
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 
+// Revisar disponibilidad minio
+await app.CheckMinioServiceAsync();
+
+// Aplicar migraciones y seeders
+await app.UseDatabaseSeederAsync();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+#region AppUse
+
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseFastEndpoints(config =>
+{
+    config.Endpoints.ShortNames = false;
+    config.Endpoints.RoutePrefix = "my-api";
+}
+    );
+app.UseSwaggerGen();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+#endregion
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-});
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
