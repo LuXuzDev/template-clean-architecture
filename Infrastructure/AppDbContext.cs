@@ -33,5 +33,10 @@ public class AppDbContext : DbContext
     /// </summary>
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+    /// <summary>
+    /// Conjunto de tokens invalidos en la base de datos.
+    /// </summary>
+    public DbSet<TokenBlackList> TokenBlackList { get; set; }
+
     #endregion
 }

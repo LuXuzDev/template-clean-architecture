@@ -43,4 +43,16 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         _dbContext.RefreshTokens.Update(refreshToken);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task DeleteAsync(string hashedRefreshToken, CancellationToken ct = default)
+    {
+        var token = await _dbContext.RefreshTokens
+            .FirstOrDefaultAsync(t => t.TokenHash == hashedRefreshToken, ct);
+
+        if (token != null)
+        {
+            _dbContext.RefreshTokens.Remove(token);
+            await _dbContext.SaveChangesAsync(ct);
+        }
+    }
 }

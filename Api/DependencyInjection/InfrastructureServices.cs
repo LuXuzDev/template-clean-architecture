@@ -27,6 +27,7 @@ public static class InfrastructureServices
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<ITokenBlackListRepository, TokenBlackListRepository>();
 
         #endregion
 

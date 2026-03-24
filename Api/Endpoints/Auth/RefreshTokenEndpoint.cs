@@ -3,7 +3,6 @@ using Application.Features.Auth.RefreshToken;
 using Application.Features.Auth.Shared.Response;
 using FastEndpoints;
 using Shared.Results;
-using Shared.Results.Errors;
 
 namespace Api.Endpoints.Auth;
 

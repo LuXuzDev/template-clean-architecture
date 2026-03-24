@@ -1,4 +1,5 @@
-﻿using Domain.RefreshTokens.Repository;
+﻿using Application.Services.Jwt;
+using Domain.RefreshTokens.Repository;
 using LuxuzDev.PersonalLogger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,11 +24,17 @@ public class CleanupRefreshTokensService : BackgroundService
 
             using var scope = _serviceProvider.CreateScope();
             var refreshTokenRepository = scope.ServiceProvider.GetRequiredService<IRefreshTokenRepository>();
+            var blackListRepository = scope.ServiceProvider.GetRequiredService<ITokenBlackListRepository>();
 
-            // Obtener tokens expirados o revocados
+            // Eliminar tokens expirados o revocados
             var totalTokensDeleted = await refreshTokenRepository.DeleteExpiredOrRevokedAsync(stoppingToken);
 
             PersonalLogger.Log($"Fueron eliminados {totalTokensDeleted} tokens expirados o revocados.");
+
+            //Eliminar tokens de la lista negra
+            var totalTokenDeletedFromBlackList = await blackListRepository.DeleteExpiredAsync(JwtSettings.ExpirationInMinutes);
+
+            PersonalLogger.Log($"Fueron eliminados {totalTokenDeletedFromBlackList} tokens de la Lista Negra.");
         }
     }
 }

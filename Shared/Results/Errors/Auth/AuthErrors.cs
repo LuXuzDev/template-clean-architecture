@@ -45,7 +45,15 @@ public static class AuthErrors
     public static readonly Error InvalidEmailFormat =
         new("INVALID_EMAIL_FORMAT", "The email format is invalid", 400);
 
-
+    /// <summary>
+    /// Error de validación que indica que el refresh token es obligatorio.
+    /// </summary>
     public static readonly ValidationError RefreshTokenRequired =
         new("REFRESH_TOKEN_REQUIRED", "Refresh token is required", "RefreshToken");
+
+    /// <summary>
+    /// Error de validación que indica que el access token (o token) es obligatorio.
+    /// </summary>
+    public static readonly ValidationError TokenRequired =
+        new("TOKEN_REQUIRED", "Token is required", "Token");
 }

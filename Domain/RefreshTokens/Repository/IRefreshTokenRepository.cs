@@ -38,4 +38,12 @@ public interface IRefreshTokenRepository
     /// El resultado de la tarea es el número de tokens eliminados de la base de datos.
     /// </returns>
     Task<int> DeleteExpiredOrRevokedAsync(CancellationToken ct = default);
+
+    /// <summary>
+    /// Elimina un refresh token específico de la base de datos.
+    /// </summary>
+    /// <param name="hashedRefreshToken">El refresh token (hasheado) que se desea eliminar.</param>
+    /// <param name="ct">Token de cancelación para abortar la operación asíncrona.</param>
+    /// <returns>Una tarea que representa la operación de eliminación asíncrona.</returns>
+    Task DeleteAsync(string hashedRefreshToken, CancellationToken ct = default);
 }
