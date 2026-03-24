@@ -33,14 +33,4 @@ public class RefreshToken : BaseEntity
     /// Hash del token que reemplaza a este token, si fue reemplazado.
     /// </summary>
     public string? ReplacedByTokenHash { get; set; }
-
-    /// <summary>
-    /// Direcci�n IP desde la cual se cre� el token.
-    /// </summary>
-    public string? CreatedByIp { get; set; }
-
-    /// <summary>
-    /// Direccion IP desde la cual se revoc� el token, si aplica.
-    /// </summary>
-    public string? RevokedByIp { get; set; }
 }

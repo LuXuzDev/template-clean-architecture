@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using Shared.Results;
 
-namespace Application.Features.RefreshTokens.GenerateRefreshToken;
+namespace Application.Features.Auth.GenerateRefreshToken;
 
 public class GenerateRefreshTokenCommand : ICommand<Result<string>>
 {

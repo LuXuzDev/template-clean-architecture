@@ -1,12 +1,12 @@
 ﻿using Application.Services.Jwt;
-using Domain.RefreshTokens.Models;
 using Domain.RefreshTokens.Repository;
 using FastEndpoints;
 using Shared.Results;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Application.Features.RefreshTokens.GenerateRefreshToken;
+
+namespace Application.Features.Auth.GenerateRefreshToken;
 
 public class GenerateRefreshTokenCommandHandler : CommandHandler<GenerateRefreshTokenCommand, Result<string>>
 {
@@ -22,12 +22,12 @@ public class GenerateRefreshTokenCommandHandler : CommandHandler<GenerateRefresh
     {
         var req = command.Request;
         using var sha256 = SHA256.Create();
-        var refreshTokenString = GenerateRandonString(JwtSettings.SecretKey);
+        var refreshTokenString = GenerateRandomString(JwtSettings.SecretKey);
         var refreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshTokenString));
         DateTime created = DateTime.UtcNow;
         DateTime expired = DateTime.UtcNow.AddMinutes(JwtSettings.RefreshTokenExpirationInMinutes);
 
-        var refreshTokenEntity = new RefreshToken
+        var refreshTokenEntity = new Domain.RefreshTokens.Models.RefreshToken
         {
             Id = Guid.NewGuid(),
             UserId = req.UserId,
@@ -40,21 +40,17 @@ public class GenerateRefreshTokenCommandHandler : CommandHandler<GenerateRefresh
         return Result<string>.Success(refreshTokenString);
     }
 
-    private string GenerateRandonString(string tokenKey)
+    private string GenerateRandomString(string tokenKey)
     {
-        const int length = 32;
-        string chars = tokenKey;
+        int length = 64;
 
-        var result = new StringBuilder(length);
-        var buffer = new byte[length];
-
+        var bytes = new byte[length];
         using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(buffer);
+        rng.GetBytes(bytes);
 
-        for (int i = 0; i < length; i++)
-        {
-            result.Append(chars[buffer[i] % chars.Length]);
-        }
-        return result.ToString();
+        return Convert.ToBase64String(bytes)
+                      .TrimEnd('=')
+                      .Replace('+', '-')
+                      .Replace('/', '_');
     }
 }

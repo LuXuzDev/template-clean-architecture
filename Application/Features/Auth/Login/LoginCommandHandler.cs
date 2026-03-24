@@ -1,5 +1,5 @@
-﻿using Application.Features.Auth.Shared.Response;
-using Application.Features.RefreshTokens.GenerateRefreshToken;
+﻿using Application.Features.Auth.GenerateRefreshToken;
+using Application.Features.Auth.Shared.Response;
 using Application.Helpers;
 using Application.Services.Jwt;
 using Domain.Users.Models;
@@ -11,7 +11,7 @@ using Shared.Results.Errors.Auth;
 
 namespace Application.Features.Auth.Login;
 
-public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthResponse>>
+public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthTokenResponse>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtServices _jwtServices;
@@ -26,19 +26,19 @@ public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthRespo
         _jwtServices = jwtServices;
         _passwordHasher = passwordHasher;
     }
-    public async override Task<Result<AuthResponse>> ExecuteAsync(LoginCommand command, CancellationToken ct = default)
+    public async override Task<Result<AuthTokenResponse>> ExecuteAsync(LoginCommand command, CancellationToken ct = default)
     {
         var req = command.Request;
 
 
         var userEntity = await _userRepository!.GetByEmailAsync(HasherHelper.Hash(req.Email), ct);
         if (userEntity is null)
-            return Result<AuthResponse>.Failure(AuthErrors.InvalidCredentials);
+            return Result<AuthTokenResponse>.Failure(AuthErrors.InvalidCredentials);
 
 
         var isPasswordCorrect = _passwordHasher.VerifyHashedPassword(null!, userEntity!.Password, req.Password);
         if (isPasswordCorrect == PasswordVerificationResult.Failed)
-            return Result<AuthResponse>.Failure(AuthErrors.InvalidCredentials);
+            return Result<AuthTokenResponse>.Failure(AuthErrors.InvalidCredentials);
 
 
         var commandRf = new GenerateRefreshTokenCommand
@@ -51,10 +51,10 @@ public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthRespo
         var refreshToken = await commandRf.ExecuteAsync(ct);
 
         if (refreshToken.IsFailure)
-            return Result<AuthResponse>.Failure(refreshToken.Error!);
+            return Result<AuthTokenResponse>.Failure(refreshToken.Error!);
 
 
-        return Result<AuthResponse>.Success(new AuthResponse
+        return Result<AuthTokenResponse>.Success(new AuthTokenResponse
         {
             Token = _jwtServices.GenerateToken(userEntity),
             RefreshToken = refreshToken.Value!,

@@ -1,4 +1,4 @@
-﻿namespace Application.Features.RefreshTokens.GenerateRefreshToken;
+﻿namespace Application.Features.Auth.GenerateRefreshToken;
 
 public class GenerateRefreshTokenRequest 
 {

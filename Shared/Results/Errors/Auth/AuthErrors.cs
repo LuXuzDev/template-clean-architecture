@@ -44,4 +44,8 @@ public static class AuthErrors
     /// </summary>
     public static readonly Error InvalidEmailFormat =
         new("INVALID_EMAIL_FORMAT", "The email format is invalid", 400);
+
+
+    public static readonly ValidationError RefreshTokenRequired =
+        new("REFRESH_TOKEN_REQUIRED", "Refresh token is required", "RefreshToken");
 }

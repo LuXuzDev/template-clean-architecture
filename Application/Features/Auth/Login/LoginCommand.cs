@@ -4,7 +4,7 @@ using Shared.Results;
 
 namespace Application.Features.Auth.Login;
 
-public class LoginCommand : ICommand<Result<AuthResponse>>
+public class LoginCommand : ICommand<Result<AuthTokenResponse>>
 {
     public LoginRequest Request { get; set; } = null!;
 }

@@ -1,5 +1,4 @@
 ﻿using Api.Endpoints.Helpers;
-using Application.Features.Auth.Login;
 using Application.Features.Auth.RefreshToken;
 using Application.Features.Auth.Shared.Response;
 using FastEndpoints;
@@ -8,37 +7,36 @@ using Shared.Results.Errors;
 
 namespace Api.Endpoints.Auth;
 
-public class LoginEndpoint : Endpoint <LoginRequest, Result<AuthTokenResponse>>
+public class RefreshTokenEndpoint : Endpoint<RefreshTokenRequest, Result<AuthTokenResponse>>
 {
     public override void Configure()
     {
-        Post("/auth/login");
+        Post("/auth/refresh");
         AllowAnonymous();
 
         Summary(s =>
         {
-            s.Summary = "Iniciar sesión";
-            s.Description = "Autentica un usuario usando su nombre de usuario o correo electrónico y contraseña";
-            s.ExampleRequest = new LoginRequest
+            s.Summary = "Refrescar token de autenticación";
+            s.Description = "Genera un nuevo token de acceso y un nuevo refresh token a partir de un refresh token válido";
+            s.ExampleRequest = new RefreshTokenRequest
             {
-                Email = "usuario@example.com",
-                Password = "Password123!"
+                RefreshToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
             };
-            s.Response<Result<AuthTokenResponse>> (200, "Autenticación exitosa");
+            s.Response<Result<AuthTokenResponse>> (200, "Token renovado correctamente");
             s.Response(400, "Datos inválidos");
-            s.Response(401, "Credenciales incorrectas");
+            s.Response(401, "Refresh token inválido o expirado");
             s.Response(404, "Usuario no encontrado");
         });
     }
 
-    public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
+    public override async Task HandleAsync(RefreshTokenRequest req, CancellationToken ct)
     {
         await EndpointHelper.HandleAsync(
         req,
-        new LoginRequestValidator(),
+        new RefreshTokenRequestValidator(),
         async () =>
         {
-            var command = new LoginCommand { Request = req };
+            var command = new RefreshTokenCommand { Request = req };
             return await command.ExecuteAsync(ct);
         },
         sendBadRequest: obj => Send.ResultAsync(Results.BadRequest(obj)),

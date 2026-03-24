@@ -1,4 +1,5 @@
-﻿using Application.Services.CurrentUser;
+﻿using Application.BackgroundServices.CleanupRefreshTokens;
+using Application.Services.CurrentUser;
 using Application.Services.DataProtector;
 using Application.Services.Jwt;
 using Application.Services.UserValidator;
@@ -47,6 +48,12 @@ public static class ApplicationServices
 
         #endregion
 
+
+        #region Background Services
+
+        services.AddHostedService<CleanupRefreshTokensService>();
+
+        #endregion
 
         #region DataProtector
 

@@ -56,13 +56,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseFastEndpoints(config =>
 {
     config.Endpoints.ShortNames = false;
     config.Endpoints.RoutePrefix = "my-api";
-}
-    );
-app.UseSwaggerGen();
+})
+.UseSwaggerGen(uiConfig: ui =>
+{
+    ui.DocumentTitle = "Template API";
+});
+
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
