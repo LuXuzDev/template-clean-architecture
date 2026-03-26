@@ -1,5 +1,5 @@
 ﻿using Api.Endpoints.Helpers;
-using Application.Features.Users.GetAll;
+using Application.Features.Users.Admin.GetAll;
 using Domain.Specifications.Sorts;
 using FastEndpoints;
 using Shared.Results;
@@ -40,7 +40,7 @@ public class GetAllUsersEndpoint : Endpoint<GetAllUsersRequest, Result<ResponseL
             var command = new GetAllUsersQuery { Request = req };
             return await command.ExecuteAsync(ct);
         },
-        sendBadRequest: obj => Send.ResultAsync(Results.BadRequest(obj)),
+        sendResponse: (obj, statusCode) => Send.ResultAsync(Results.Json(obj, statusCode: statusCode)),
         sendOk: obj => Send.OkAsync((Result<ResponseListBase<GetAllUserResponse>>)obj),
         ct);
     }

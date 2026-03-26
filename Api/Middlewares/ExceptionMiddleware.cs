@@ -38,7 +38,6 @@ public class ExceptionMiddleware
             response = new
             {
                 status = statusCode,
-                code = apiException.ExceptionCode.ToString(),
                 message = apiException.ErrorMessage,
                 details = apiException.ErrorDetails,
                 date = DateTime.UtcNow.ToString()

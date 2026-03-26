@@ -39,7 +39,7 @@ public class LoginEndpoint : Endpoint <LoginRequest, Result<AuthTokenResponse>>
             var command = new LoginCommand { Request = req };
             return await command.ExecuteAsync(ct);
         },
-        sendBadRequest: obj => Send.ResultAsync(Results.BadRequest(obj)),
+       sendResponse: (obj, statusCode) => Send.ResultAsync(Results.Json(obj, statusCode: statusCode)),
         sendOk: obj => Send.OkAsync((Result<AuthTokenResponse>)obj),
         ct);
     }

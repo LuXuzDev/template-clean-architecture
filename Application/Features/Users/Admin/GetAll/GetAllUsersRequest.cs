@@ -1,7 +1,7 @@
 ﻿using Domain.Specifications.Sorts;
 using Shared.Requests;
 
-namespace Application.Features.Users.GetAll;
+namespace Application.Features.Users.Admin.GetAll;
 
 public class GetAllUsersRequest : RequestListBase
 {

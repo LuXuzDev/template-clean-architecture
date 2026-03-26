@@ -30,15 +30,16 @@ public class LogoutEnpoint : Endpoint<LogoutRequest, Result<string>>
     public override async Task HandleAsync(LogoutRequest req, CancellationToken ct)
     {
         await EndpointHelper.HandleAsync(
-        req,
-        new LogoutRequestValidator(),
-        async () =>
-        {
-            var command = new LogoutCommand { Request = req };
-            return await command.ExecuteAsync(ct);
-        },
-        sendBadRequest: obj => Send.ResultAsync(Results.BadRequest(obj)),
-        sendOk: obj => Send.OkAsync((Result<string>)obj),
-        ct);
+            req,
+            new LogoutRequestValidator(),
+            async () =>
+            {
+                var command = new LogoutCommand { Request = req };
+                return await command.ExecuteAsync(ct); // devuelve Result<string>
+            },
+            sendResponse: (obj, statusCode) => Send.ResultAsync(Results.Json(obj, statusCode: statusCode)),
+            sendOk: result => Send.OkAsync((Result<string>)result),
+            ct
+        );
     }
 }

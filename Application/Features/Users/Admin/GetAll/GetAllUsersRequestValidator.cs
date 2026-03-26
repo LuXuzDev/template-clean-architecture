@@ -3,7 +3,7 @@ using FluentValidation;
 using Shared.Results.Errors;
 using Shared.Results.Errors.Pagination;
 
-namespace Application.Features.Users.GetAll;
+namespace Application.Features.Users.Admin.GetAll;
 
 public class GetAllUsersRequestValidator : AbstractValidator<GetAllUsersRequest>
 {

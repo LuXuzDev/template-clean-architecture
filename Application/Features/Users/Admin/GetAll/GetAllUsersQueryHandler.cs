@@ -3,10 +3,11 @@ using Domain.Entities.Roles.Constants;
 using Domain.Entities.Users.Repository;
 using Domain.Specifications.Users;
 using FastEndpoints;
+using LuxuzDev.PersonalLogger;
 using Shared.Results;
 using IMapper = AutoMapper.IMapper;
 
-namespace Application.Features.Users.GetAll;
+namespace Application.Features.Users.Admin.GetAll;
 
 public class GetAllUsersQueryHandler : CommandHandler<GetAllUsersQuery , Result<ResponseListBase<GetAllUserResponse>>>
 {

@@ -1,4 +1,4 @@
-﻿using Application.Features.Users.GetAll;
+﻿using Application.Features.Users.Admin.GetAll;
 using Application.Features.Users.Resolvers.EmailResolver;
 
 

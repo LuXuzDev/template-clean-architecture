@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Exception;
+using Shared.Results;
+using Shared.Results.Errors.Auth;
 using System.Text;
 
 namespace Api.DependencyInjection;
@@ -107,20 +109,24 @@ public static class ApplicationServices
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnChallenge = ctx =>
+                    OnChallenge = async ctx =>
                     {
+                        // Evita el 401 automático
                         ctx.HandleResponse();
 
-                        // Si es AllowAnonymous, no lanzar excepción
                         var endpoint = ctx.HttpContext.GetEndpoint();
+
+                        // Endpoints AllowAnonymous no se bloquean
                         if (endpoint?.Metadata.GetMetadata<AllowAnonymousAttribute>() != null)
-                        {
-                            return Task.CompletedTask;
-                        }
+                            return;
 
-                        ExceptionHelper.ThrowForbidden("Debe iniciar sesión para esta acción");
+                        // Construye tu resultado genérico con AuthErrors.Unauthorized
+                        var response = Result<object>.Failure(AuthErrors.Unauthorized);
 
-                        return Task.CompletedTask;
+                        ctx.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        ctx.HttpContext.Response.ContentType = "application/json";
+
+                        await ctx.HttpContext.Response.WriteAsJsonAsync(response);
                     }
                 };
 

@@ -7,13 +7,14 @@ namespace Api.Endpoints.Helpers;
 public static class EndpointHelper
 {
     public static async Task HandleAsync<TRequest, TResult>(
-        TRequest req,
-        IValidator<TRequest> validator,
-        Func<Task<Result<TResult>>> action,
-        Func<object, Task> sendBadRequest,
-        Func<object, Task> sendOk,
-        CancellationToken ct)
+    TRequest req,
+    IValidator<TRequest> validator,
+    Func<Task<Result<TResult>>> action,
+    Func<object, int, Task> sendResponse, // ahora incluimos el status code
+    Func<object, Task> sendOk,
+    CancellationToken ct)
     {
+        // 1️⃣ Validación
         var validationResult = await validator.ValidateAsync(req, ct);
 
         if (!validationResult.IsValid)
@@ -26,26 +27,33 @@ public static class EndpointHelper
                 ))
                 .ToList();
 
-            await sendBadRequest(new
+            await sendResponse(new
             {
                 code = "VALIDATION_ERROR",
                 errors
-            });
+            }, 400); // BadRequest
             return;
         }
 
+        // 2️⃣ Ejecuta acción
         var result = await action();
 
         if (result.IsFailure)
         {
-            await sendBadRequest(new
+            // Usa el httpCode del error si existe, sino 400
+            var statusCode = result.Error?.HttpCode ?? 400;
+
+            await sendResponse(new
             {
                 code = result.Error?.Code,
-                message = result.Error?.Message
-            });
+                message = result.Error?.Message,
+                httpCode = result.Error?.HttpCode
+            }, statusCode);
+
             return;
         }
 
+        // 3️⃣ Éxito
         await sendOk(result);
     }
 }

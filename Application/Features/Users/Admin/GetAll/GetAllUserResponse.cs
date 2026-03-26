@@ -1,4 +1,4 @@
-﻿namespace Application.Features.Users.GetAll;
+﻿namespace Application.Features.Users.Admin.GetAll;
 
 public class GetAllUserResponse
 {

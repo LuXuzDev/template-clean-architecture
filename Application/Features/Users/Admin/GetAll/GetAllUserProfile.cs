@@ -2,7 +2,7 @@
 using AutoMapper;
 using Domain.Entities.Users.Models;
 
-namespace Application.Features.Users.GetAll;
+namespace Application.Features.Users.Admin.GetAll;
 
 public class GetAllUserProfile : Profile
 {
