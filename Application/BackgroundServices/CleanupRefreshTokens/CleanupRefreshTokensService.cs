@@ -1,5 +1,5 @@
 ﻿using Application.Services.Jwt;
-using Domain.RefreshTokens.Repository;
+using Domain.Entities.RefreshTokens.Repository;
 using LuxuzDev.PersonalLogger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

@@ -1,6 +1,6 @@
-﻿using Domain.RefreshTokens.Repository;
-using Domain.Roles.Repository;
-using Domain.Users.Repository;
+﻿using Domain.Entities.RefreshTokens.Repository;
+using Domain.Entities.Roles.Repository;
+using Domain.Entities.Users.Repository;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Seeders;

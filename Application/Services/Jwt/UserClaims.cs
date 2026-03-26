@@ -1,5 +1,4 @@
-﻿using Domain.Roles.Constants;
-
+﻿using Domain.Entities.Roles.Constants;
 
 namespace Application.Services.Jwt;
 

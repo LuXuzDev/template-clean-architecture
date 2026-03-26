@@ -1,5 +1,4 @@
 ﻿using Api.Endpoints.Helpers;
-using Application.Features.Auth.Login;
 using Application.Features.Auth.Logout;
 using FastEndpoints;
 using Shared.Results;

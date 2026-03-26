@@ -1,4 +1,4 @@
-﻿using Domain.Users.Models;
+﻿using Domain.Entities.Users.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Services.Jwt;

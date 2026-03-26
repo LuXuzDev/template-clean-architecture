@@ -1,5 +1,5 @@
-﻿using Domain.Roles.Models;
-using Domain.Roles.Repository;
+﻿using Domain.Entities.Roles.Models;
+using Domain.Entities.Roles.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;

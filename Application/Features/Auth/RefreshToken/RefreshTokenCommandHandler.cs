@@ -1,8 +1,9 @@
 ﻿using Application.Features.Auth.GenerateRefreshToken;
 using Application.Features.Auth.Shared.Response;
 using Application.Services.Jwt;
-using Domain.RefreshTokens.Repository;
-using Domain.Users.Repository;
+using Domain.Entities.RefreshTokens.Repository;
+using Domain.Entities.Users.Repository;
+using Domain.Specifications.Users;
 using FastEndpoints;
 using Shared.Results;
 using Shared.Results.Errors.Auth;
@@ -46,7 +47,7 @@ public class RefreshTokenCommandHandler : CommandHandler<RefreshTokenCommand, Re
             return Result<AuthTokenResponse>.Failure(AuthErrors.TokenExpired);
 
 
-        var userEntity = await _userRepository.GetByIdAsync(existRefreshToken.UserId, ct);
+        var userEntity = await _userRepository.FirstOrDefaultAsync(new UserByIdSpecification(existRefreshToken.UserId), ct);
         if (userEntity is null)
             return Result<AuthTokenResponse>.Failure(UserErrors.NotFound);
 

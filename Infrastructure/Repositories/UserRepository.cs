@@ -1,35 +1,11 @@
-﻿using Domain.Users.Models;
-using Domain.Users.Repository;
-using Microsoft.EntityFrameworkCore;
+﻿using Domain.Entities.Users.Models;
+using Domain.Entities.Users.Repository;
 
 namespace Infrastructure.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : Repository<User>, IUserRepository
 {
-    private readonly AppDbContext _dbContext;
-
-    public UserRepository(AppDbContext dbContext)
+    public UserRepository(AppDbContext dbContext) : base(dbContext)
     {
-        _dbContext = dbContext;
-    }
-
-    public async Task CreateAsync(User user)
-    {
-        await _dbContext.Users.AddAsync(user);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task<User?> GetByEmailAsync(string hashedEmail, CancellationToken ct)
-    {
-        return await _dbContext.Users
-            .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.HashedEmail == hashedEmail);
-    }
-
-    public async Task<User?> GetByIdAsync(Guid id, CancellationToken ct)
-    {
-        return await _dbContext.Users
-            .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Id == id);
     }
 }

@@ -1,5 +1,5 @@
-﻿using Domain.RefreshTokens.Models;
-using Domain.RefreshTokens.Repository;
+﻿using Domain.Entities.RefreshTokens.Models;
+using Domain.Entities.RefreshTokens.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;

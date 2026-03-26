@@ -3,7 +3,7 @@ using Application.Services.CurrentUser;
 using Application.Services.DataProtector;
 using Application.Services.Jwt;
 using Application.Services.UserValidator;
-using Domain.Users.Models;
+using Domain.Entities.Users.Models;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -54,6 +54,7 @@ public static class ApplicationServices
         services.AddHostedService<CleanupRefreshTokensService>();
 
         #endregion
+
 
         #region DataProtector
 

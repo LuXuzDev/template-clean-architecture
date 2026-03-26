@@ -2,8 +2,9 @@
 using Application.Features.Auth.Shared.Response;
 using Application.Helpers;
 using Application.Services.Jwt;
-using Domain.Users.Models;
-using Domain.Users.Repository;
+using Domain.Entities.Users.Models;
+using Domain.Entities.Users.Repository;
+using Domain.Specifications.Users;
 using FastEndpoints;
 using Microsoft.AspNetCore.Identity;
 using Shared.Results;
@@ -30,11 +31,10 @@ public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthToken
     {
         var req = command.Request;
 
+        var userEntity = await _userRepository.FirstOrDefaultAsync(new UserByEmailSpecification(HasherHelper.Hash(req.Email)), ct);
 
-        var userEntity = await _userRepository!.GetByEmailAsync(HasherHelper.Hash(req.Email), ct);
         if (userEntity is null)
             return Result<AuthTokenResponse>.Failure(AuthErrors.InvalidCredentials);
-
 
         var isPasswordCorrect = _passwordHasher.VerifyHashedPassword(null!, userEntity!.Password, req.Password);
         if (isPasswordCorrect == PasswordVerificationResult.Failed)

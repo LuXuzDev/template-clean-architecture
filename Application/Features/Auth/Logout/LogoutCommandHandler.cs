@@ -1,6 +1,6 @@
 ﻿using Application.Services.UserValidator;
-using Domain.RefreshTokens.Models;
-using Domain.RefreshTokens.Repository;
+using Domain.Entities.RefreshTokens.Models;
+using Domain.Entities.RefreshTokens.Repository;
 using FastEndpoints;
 using Shared.Results;
 using Shared.Results.Succes.Auth;

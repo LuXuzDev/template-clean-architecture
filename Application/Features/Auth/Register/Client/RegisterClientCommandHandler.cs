@@ -3,10 +3,11 @@ using Application.Features.Auth.Shared.Response;
 using Application.Helpers;
 using Application.Services.DataProtector;
 using Application.Services.Jwt;
-using Domain.Roles.Constants;
-using Domain.Roles.Repository;
-using Domain.Users.Models;
-using Domain.Users.Repository;
+using Domain.Entities.Roles.Constants;
+using Domain.Entities.Roles.Repository;
+using Domain.Entities.Users.Models;
+using Domain.Entities.Users.Repository;
+using Domain.Specifications.Users;
 using FastEndpoints;
 using Microsoft.AspNetCore.Identity;
 using Shared.Results;
@@ -42,10 +43,9 @@ public class RegisterClientCommandHandler : CommandHandler<RegisterClientCommand
         var req = command.Request;
         var protectorEmail = _dataProtectorFactory.Create(DataPorpuse.UserEmail);
 
+        var emailExist = await _userRepository.AnyAsync(new UserByEmailSpecification(req.Email), ct);
 
-        var existingUserByEmail = await _userRepository.GetByEmailAsync(HasherHelper.Hash(req.Email), ct);
-
-        if (existingUserByEmail is not null)
+        if (emailExist)
             return Result<AuthTokenResponse>.Failure(UserErrors.EmailInUse);
 
         var role = await _roleRepository.GetByNameAsync(RoleConstants.Client, ct);

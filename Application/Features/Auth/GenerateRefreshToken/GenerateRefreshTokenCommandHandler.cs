@@ -1,5 +1,5 @@
 ﻿using Application.Services.Jwt;
-using Domain.RefreshTokens.Repository;
+using Domain.Entities.RefreshTokens.Repository;
 using FastEndpoints;
 using Shared.Results;
 using System.Security.Cryptography;
@@ -27,7 +27,7 @@ public class GenerateRefreshTokenCommandHandler : CommandHandler<GenerateRefresh
         DateTime created = DateTime.UtcNow;
         DateTime expired = DateTime.UtcNow.AddMinutes(JwtSettings.RefreshTokenExpirationInMinutes);
 
-        var refreshTokenEntity = new Domain.RefreshTokens.Models.RefreshToken
+        var refreshTokenEntity = new Domain.Entities.RefreshTokens.Models.RefreshToken
         {
             Id = Guid.NewGuid(),
             UserId = req.UserId,

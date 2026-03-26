@@ -1,7 +1,7 @@
 ﻿using Application.Helpers;
 using Application.Services.DataProtector;
-using Domain.Roles.Constants;
-using Domain.Users.Models;
+using Domain.Entities.Roles.Constants;
+using Domain.Entities.Users.Models;
 using LuxuzDev.PersonalLogger;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

@@ -1,5 +1,5 @@
-﻿using Domain.Roles.Constants;
-using Domain.Roles.Models;
+﻿using Domain.Entities.Roles.Constants;
+using Domain.Entities.Roles.Models;
 using LuxuzDev.PersonalLogger;
 using Microsoft.EntityFrameworkCore;
 

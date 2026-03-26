@@ -1,6 +1,7 @@
 ﻿using Application.Services.Jwt;
-using Domain.RefreshTokens.Repository;
-using Domain.Users.Repository;
+using Domain.Entities.RefreshTokens.Repository;
+using Domain.Entities.Users.Repository;
+using Domain.Specifications.Users;
 using Microsoft.AspNetCore.Http;
 
 
@@ -34,23 +35,25 @@ public class CurrentUserService : ICurrentUserService
 
         var authHeader = httpContext.Request.Headers["Authorization"].FirstOrDefault();
 
-        if (string.IsNullOrEmpty(authHeader) || authHeader.StartsWith("Bearer "))
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            return null; // o manejar 401
+
+        // Extraer solo el token
+        var accessToken = authHeader.Substring("Bearer ".Length).Trim();
+
+        if (await _tokenBlackListRepository.ExistsAsync(accessToken, ct))
+            return null; // token bloqueado
+
+        if (await _tokenBlackListRepository.ExistsAsync(accessToken, ct))
             return null;
-
-        var accessToken = authHeader["Bearer ".Length..];
-
-        if(await _tokenBlackListRepository.ExistsAsync(accessToken, ct))
-            return null;
-
-        
 
         // 🔹 Extrae claims del token
         var userClaims = _jwtService.ExtractUserClaimsFromHttpContext(httpContext);
         if (userClaims is null)
             return null;
-
+        
         // 🔹 Verificamos que realmente exista en base de datos
-        var user = await _userRepository.GetByIdAsync(userClaims.UserId, ct);
+        var user = await _userRepository.FirstOrDefaultAsync(new UserByIdSpecification(userClaims.UserId), ct);
         if (user is null)
             return null;
 

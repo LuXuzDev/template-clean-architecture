@@ -1,6 +1,6 @@
 ﻿using Application.Services.Blob;
 using Application.Services.DataProtector;
-using Domain.Users.Models;
+using Domain.Entities.Users.Models;
 using LuxuzDev.PersonalLogger;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
