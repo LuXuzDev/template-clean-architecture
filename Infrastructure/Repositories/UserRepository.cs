@@ -13,6 +13,12 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
+    public async Task CreateAsync(User user)
+    {
+        await _dbContext.Users.AddAsync(user);
+        await _dbContext.SaveChangesAsync();
+    }
+
     public async Task<User?> GetByEmailAsync(string hashedEmail, CancellationToken ct)
     {
         return await _dbContext.Users

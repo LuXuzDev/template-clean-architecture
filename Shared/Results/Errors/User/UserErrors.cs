@@ -14,12 +14,23 @@ public static class UserErrors
     public static readonly Error EmailRequired =
         new("EMAIL_REQUIRED", "Email is required", 400);
 
+    /// <summary>
+    /// El email ya está en uso
+    /// </summary>
+    public static readonly Error EmailInUse =
+        new("EMAIL_IN_USE", "Email is already registered", 409);
 
     /// <summary>
     /// Formato de correo inválido
     /// </summary>
     public static readonly Error InvalidEmailFormat =
         new("INVALID_EMAIL_FORMAT", "The email format is invalid", 400);
+
+    /// <summary>
+    /// Password es obligatorio
+    /// </summary>
+    public static readonly Error PasswordRequired =
+        new("PASSWORD_REQUIRED", "Password is required", 400);
 
 
     /// <summary>

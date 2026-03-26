@@ -1,42 +1,43 @@
 ﻿using Api.Endpoints.Helpers;
-using Application.Features.Auth.Login;
+using Application.Features.Auth.Register.Client;
 using Application.Features.Auth.Shared.Response;
 using FastEndpoints;
 using Shared.Results;
 
 namespace Api.Endpoints.Auth;
 
-public class LoginEndpoint : Endpoint <LoginRequest, Result<AuthTokenResponse>>
+public class RegisterClientEndpoint : Endpoint<RegisterClientRequest, Result<AuthTokenResponse>>
 {
     public override void Configure()
     {
-        Post("/auth/login");
+        Post("/auth/register");
         AllowAnonymous();
 
         Summary(s =>
         {
-            s.Summary = "Iniciar sesión";
-            s.Description = "Autentica un usuario usando su nombre de usuario o correo electrónico y contraseña";
-            s.ExampleRequest = new LoginRequest
+            s.Summary = "Registrar cliente";
+            s.Description = "Registra un nuevo cliente en el sistema utilizando email y contraseña";
+
+            s.ExampleRequest = new RegisterClientRequest
             {
                 Email = "usuario@example.com",
                 Password = "Password123!"
             };
-            s.Response<Result<AuthTokenResponse>> (200, "Autenticación exitosa");
+
+            s.Response<Result<AuthTokenResponse>>(200, "Cliente registrado exitosamente");
             s.Response(400, "Datos inválidos");
-            s.Response(401, "Credenciales incorrectas");
-            s.Response(404, "Usuario no encontrado");
+            s.Response(409, "El email ya está en uso");
         });
     }
 
-    public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
+    public override async Task HandleAsync(RegisterClientRequest req, CancellationToken ct)
     {
         await EndpointHelper.HandleAsync(
         req,
-        new LoginRequestValidator(),
+        new RegisterClientRequestValidator(),
         async () =>
         {
-            var command = new LoginCommand { Request = req };
+            var command = new RegisterClientCommand { Request = req };
             return await command.ExecuteAsync(ct);
         },
         sendBadRequest: obj => Send.ResultAsync(Results.BadRequest(obj)),
