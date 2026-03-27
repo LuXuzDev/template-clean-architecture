@@ -9,13 +9,13 @@ using IMapper = AutoMapper.IMapper;
 
 namespace Application.Features.Users.Admin.GetAll;
 
-public class GetAllUsersQueryHandler : CommandHandler<GetAllUsersQuery , Result<ResponseListBase<GetAllUserResponse>>>
+public class GetUsersQueryHandler : CommandHandler<GetUsersQuery , Result<ResponseListBase<GetUserResponse>>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUserValidatorService _userValidatorService;
     private readonly IMapper _mapper;
 
-    public GetAllUsersQueryHandler
+    public GetUsersQueryHandler
         (IUserRepository userRepository,
         IUserValidatorService userValidatorService,
         IMapper mapper)
@@ -25,12 +25,12 @@ public class GetAllUsersQueryHandler : CommandHandler<GetAllUsersQuery , Result<
         _mapper = mapper;
     }
 
-    public override async Task<Result<ResponseListBase<GetAllUserResponse>>> ExecuteAsync(GetAllUsersQuery query, CancellationToken ct = default)
+    public override async Task<Result<ResponseListBase<GetUserResponse>>> ExecuteAsync(GetUsersQuery query, CancellationToken ct = default)
     {
         var userClaimsResult = await _userValidatorService.ValidateAsync(ct, [RoleConstants.Admin]);
 
         if(userClaimsResult.IsFailure)
-            return Result<ResponseListBase<GetAllUserResponse>>.Failure(userClaimsResult.Error!);
+            return Result<ResponseListBase<GetUserResponse>>.Failure(userClaimsResult.Error!);
 
         var req = query.Request;
         var spec = new UsersPagedSpecification(req.PageNumber, req.PageSize, req.SortBy, req.Descending);
@@ -38,16 +38,16 @@ public class GetAllUsersQueryHandler : CommandHandler<GetAllUsersQuery , Result<
         var userTotalCount = await _userRepository.TotalCount(ct);
         var usersEntities = await _userRepository.ListAsync(ct, spec);
 
-        var usersResponse = _mapper.Map<List<GetAllUserResponse>>(usersEntities);
+        var usersResponse = _mapper.Map<List<GetUserResponse>>(usersEntities);
 
 
-        var response = ResponseListBase<GetAllUserResponse>.Create(
+        var response = ResponseListBase<GetUserResponse>.Create(
             usersResponse,
             userTotalCount,
             req.PageNumber,
             req.PageSize
         );
 
-        return Result<ResponseListBase<GetAllUserResponse>>.Success(response);
+        return Result<ResponseListBase<GetUserResponse>>.Success(response);
     }
 }

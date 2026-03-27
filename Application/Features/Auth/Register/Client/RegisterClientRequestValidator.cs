@@ -15,13 +15,13 @@ public class RegisterClientRequestValidator : AbstractValidator<RegisterClientRe
             .WithState(_ => new ValidationError(
                 Code: UserErrors.EmailRequired.Code,
                 Message: UserErrors.EmailRequired.Message,
-                PropertyName: "Email"
+                PropertyName: nameof(RegisterClientRequest.Email)
             ))
             .EmailAddress()
             .WithState(_ => new ValidationError(
                 Code: UserErrors.InvalidEmailFormat.Code,
                 Message: UserErrors.InvalidEmailFormat.Message,
-                PropertyName: "Email"
+                PropertyName: nameof(RegisterClientRequest.Email)
             ));
 
 
@@ -31,14 +31,14 @@ public class RegisterClientRequestValidator : AbstractValidator<RegisterClientRe
             .WithState(_ => new ValidationError(
                 Code: UserErrors.PasswordRequired.Code,
                 Message: UserErrors.PasswordRequired.Message,
-                PropertyName: "Password"
+                PropertyName: nameof(RegisterClientRequest.Password)
             ))
 
             .Must(PasswordValidator.BeStrongPassword)
             .WithState(_ => new ValidationError(
                 Code: UserErrors.WeakPassword.Code,
                 Message: UserErrors.WeakPassword.Message,
-                PropertyName: "Password"
+                PropertyName: nameof(RegisterClientRequest.Password)
             ));
     }
 }

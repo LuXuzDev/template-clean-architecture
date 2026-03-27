@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Features.Auth.RefreshToken;
+using FluentValidation;
 using Shared.Results.Errors;
 using Shared.Results.Errors.Auth;
 
@@ -13,7 +14,7 @@ public class LogoutRequestValidator : AbstractValidator<LogoutRequest>
             .WithState(_ => new ValidationError(
                 Code: AuthErrors.TokenRequired.Code,
                 Message: AuthErrors.TokenRequired.Message,
-                PropertyName: "Token"
+                PropertyName: nameof(LogoutRequest.Token)
                 ));
 
 
@@ -22,7 +23,7 @@ public class LogoutRequestValidator : AbstractValidator<LogoutRequest>
             .WithState(_ => new ValidationError(
                 Code: AuthErrors.RefreshTokenRequired.Code,
                 Message: AuthErrors.RefreshTokenRequired.Message,
-                PropertyName: "RefreshToken"
+                PropertyName: nameof(RefreshTokenRequest.RefreshToken)
                 ));
     }
 }

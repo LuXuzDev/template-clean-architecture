@@ -5,16 +5,16 @@ using Shared.Results.Errors.Pagination;
 
 namespace Application.Features.Users.Admin.GetAll;
 
-public class GetAllUsersRequestValidator : AbstractValidator<GetAllUsersRequest>
+public class GetUsersRequestValidator : AbstractValidator<GetUsersRequest>
 {
-    public GetAllUsersRequestValidator()
+    public GetUsersRequestValidator()
     {
         RuleFor(x => x.PageNumber)
             .Must(PaginationValidator.BeValidPageNumber)
             .WithState(_ => new ValidationError(
                 Code: PaginationErrors.InvalidPageNumber.Code,
                 Message: PaginationErrors.InvalidPageNumber.Message,
-                PropertyName: "Page Number"
+                PropertyName: nameof(GetUsersRequest.PageNumber)
             ));
 
         RuleFor(x => x.PageSize)
@@ -22,13 +22,13 @@ public class GetAllUsersRequestValidator : AbstractValidator<GetAllUsersRequest>
             .WithState(_ => new ValidationError(
                 Code: PaginationErrors.PageSizeTooSmall.Code,
                 Message: PaginationErrors.PageSizeTooSmall.Message,
-                PropertyName: "Page Size"
+                PropertyName: nameof(GetUsersRequest.PageSize)
             ))
             .LessThanOrEqualTo(100)
             .WithState(_ => new ValidationError(
                 Code: PaginationErrors.PageSizeTooLarge.Code,
                 Message: PaginationErrors.PageSizeTooLarge.Message,
-                PropertyName: "Page Size"
+                PropertyName: nameof(GetUsersRequest.PageSize)
             ));
 
         RuleFor(x => x.SortBy)
@@ -36,7 +36,7 @@ public class GetAllUsersRequestValidator : AbstractValidator<GetAllUsersRequest>
         .WithState(_ => new ValidationError(
             Code: PaginationErrors.InvalidSortBy.Code,
             Message: PaginationErrors.InvalidSortBy.Message,
-            PropertyName: "SortBy"
+            PropertyName: nameof(GetUsersRequest.SortBy)
         ));
     }
 }

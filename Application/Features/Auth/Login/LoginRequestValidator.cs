@@ -15,13 +15,13 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
             .WithState(_ => new ValidationError(
                 Code: AuthErrors.EmailRequired.Code,
                 Message: AuthErrors.EmailRequired.Message,
-                PropertyName: "Email"
+                PropertyName: nameof(LoginRequest.Email)
             ))
             .EmailAddress()
             .WithState(_ => new ValidationError(
                 Code: AuthErrors.InvalidEmailFormat.Code,
                 Message: AuthErrors.InvalidEmailFormat.Message,
-                PropertyName: "Email"
+                PropertyName: nameof(LoginRequest.Email)
             ));
 
 
@@ -30,7 +30,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
             .WithState(_ => new ValidationError(
                 Code: AuthErrors.PasswordRequired.Code,
                 Message: AuthErrors.PasswordRequired.Message,
-                PropertyName: "Password"
+                PropertyName: nameof(LoginRequest.Password)
             ));
     }
 }

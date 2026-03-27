@@ -55,7 +55,7 @@ public class RefreshTokenCommandHandler : CommandHandler<RefreshTokenCommand, Re
         {
             Request = new GenerateRefreshTokenRequest
             {
-                UserId = userEntity!.Id,
+                UserId = userEntity!.Id.ToString(),
             }
         };
 

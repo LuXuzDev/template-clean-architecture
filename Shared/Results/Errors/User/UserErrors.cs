@@ -39,4 +39,17 @@ public static class UserErrors
     public static readonly Error WeakPassword =
         new("WEAK_PASSWORD",
             "Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special character.", 400);
+
+
+    /// <summary>
+    /// Error que indica que el formato del número de teléfono es inválido.
+    /// </summary>
+    public static readonly Error PhoneInvalidFormat =
+        new("PHONE_INVALID_FORMAT", "Phone number must contain exactly 8 digits", 400);
+
+    /// <summary>
+    /// Formato de id inválido
+    /// </summary>
+    public static readonly Error InvalidGuidFormat =
+        new("INVALID_ID_FORMAT", "The id format is invalid", 400);
 }

@@ -16,7 +16,7 @@ public static class AutoMapperServices
 
 
         //Mappers
-        services.AddAutoMapper(cfg => cfg.AddProfile<GetAllUserProfile>());
+        services.AddAutoMapper(cfg => cfg.AddProfile<GetUserProfile>());
 
         #endregion
 

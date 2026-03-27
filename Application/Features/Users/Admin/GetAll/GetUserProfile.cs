@@ -4,12 +4,12 @@ using Domain.Entities.Users.Models;
 
 namespace Application.Features.Users.Admin.GetAll;
 
-public class GetAllUserProfile : Profile
+public class GetUserProfile : Profile
 {
-    public GetAllUserProfile()
+    public GetUserProfile()
     {
-        CreateMap<User, GetAllUserResponse>()
+        CreateMap<User, GetUserResponse>()
         .ForMember(dest => dest.Email,
-            opt => opt.MapFrom<DecryptEmailResolver<GetAllUserResponse>>());
+            opt => opt.MapFrom<DecryptEmailResolver<GetUserResponse>>());
     }
 }

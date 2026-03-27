@@ -22,9 +22,6 @@ public static class FileValidator
         ".mp4", ".mov", ".avi"
     };
 
-    public static bool BeValidGuid(string value)
-        => Guid.TryParse(value, out _);
-
     public static bool BeValidMediaType(IFormFile file)
     {
         if (file is null)

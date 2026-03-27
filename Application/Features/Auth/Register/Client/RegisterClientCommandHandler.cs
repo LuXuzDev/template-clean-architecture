@@ -43,7 +43,7 @@ public class RegisterClientCommandHandler : CommandHandler<RegisterClientCommand
         var req = command.Request;
         var protectorEmail = _dataProtectorFactory.Create(DataPorpuse.UserEmail);
 
-        var emailExist = await _userRepository.AnyAsync(new UserByEmailSpecification(req.Email), ct);
+        var emailExist = await _userRepository.AnyAsync(new UserByEmailSpecification(HasherHelper.Hash(req.Email)), ct);
 
         if (emailExist)
             return Result<AuthTokenResponse>.Failure(UserErrors.EmailInUse);
@@ -71,7 +71,7 @@ public class RegisterClientCommandHandler : CommandHandler<RegisterClientCommand
         {
             Request = new GenerateRefreshTokenRequest
             {
-                UserId = user.Id,
+                UserId = user.Id.ToString(),
             }
         };
 

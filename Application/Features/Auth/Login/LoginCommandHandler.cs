@@ -45,7 +45,7 @@ public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthToken
         {
             Request = new GenerateRefreshTokenRequest
             {
-                UserId = userEntity.Id,
+                UserId = userEntity.Id.ToString(),
             }
         };
         var refreshToken = await commandRf.ExecuteAsync(ct);

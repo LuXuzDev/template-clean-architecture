@@ -30,7 +30,7 @@ public class GenerateRefreshTokenCommandHandler : CommandHandler<GenerateRefresh
         var refreshTokenEntity = new Domain.Entities.RefreshTokens.Models.RefreshToken
         {
             Id = Guid.NewGuid(),
-            UserId = req.UserId,
+            UserId = Guid.Parse(req.UserId),
             TokenHash = Convert.ToBase64String(refreshTokenHash),
             CreatedAt = created,
             ExpiresAt = expired,
