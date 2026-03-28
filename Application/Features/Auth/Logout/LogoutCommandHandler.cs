@@ -1,11 +1,12 @@
-﻿using Application.Services.UserValidator;
+﻿using Application.Helpers.Hasher;
+using Application.Services.UserValidator;
 using Domain.Entities.RefreshTokens.Models;
 using Domain.Entities.RefreshTokens.Repository;
+using Domain.Shared.Abstractions;
+using Domain.Specifications.RefreshTokens;
 using FastEndpoints;
 using Shared.Results;
 using Shared.Results.Succes.Auth;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Application.Features.Auth.Logout;
 
@@ -14,15 +15,18 @@ public class LogoutCommandHandler : CommandHandler<LogoutCommand, Result<string>
     private readonly ITokenBlackListRepository _tokenBlackListRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IUserValidatorService _userValidatorService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public LogoutCommandHandler
         (ITokenBlackListRepository tokenBlackListRepository,
         IRefreshTokenRepository refreshTokenRepository,
-        IUserValidatorService userValidatorService)
+        IUserValidatorService userValidatorService,
+        IUnitOfWork unitOfWork)
     {
         _tokenBlackListRepository = tokenBlackListRepository;
         _refreshTokenRepository = refreshTokenRepository;
         _userValidatorService = userValidatorService;
+        _unitOfWork = unitOfWork;
     }
 
     public override async Task<Result<string>> ExecuteAsync(LogoutCommand command, CancellationToken ct = default)
@@ -33,8 +37,9 @@ public class LogoutCommandHandler : CommandHandler<LogoutCommand, Result<string>
         if(result.IsFailure)
             return Result<string>.Failure(result.Error!);
 
-        var tokenHash = ComputeRefreshTokenHash(req.RefreshToken);
-        await _refreshTokenRepository.DeleteAsync(tokenHash, ct);
+        var tokenHash = HasherHelper.ComputeRefreshTokenHash(req.RefreshToken);
+
+        await _refreshTokenRepository.DeleteBySpecAsync(new RefreshTokenByTokenSpecification(tokenHash), ct);
 
         var blacklistedToken = new TokenBlackList
         {
@@ -44,13 +49,8 @@ public class LogoutCommandHandler : CommandHandler<LogoutCommand, Result<string>
 
         await _tokenBlackListRepository.CreateAsync(blacklistedToken);
 
-        return Result<string>.Success(AuthSuccess.LogoutSuccess);
-    }
 
-    private string ComputeRefreshTokenHash(string refreshToken)
-    {
-        using var sha256 = SHA256.Create();
-        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshToken));
-        return Convert.ToBase64String(hashBytes);
+        await _unitOfWork.SaveChangesAsync(ct);
+        return Result<string>.Success(AuthSuccess.LogoutSuccess);
     }
 }

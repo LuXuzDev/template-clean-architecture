@@ -1,6 +1,6 @@
 ﻿using Application.Features.Auth.GenerateRefreshToken;
 using Application.Features.Auth.Shared.Response;
-using Application.Helpers;
+using Application.Helpers.Hasher;
 using Application.Services.Jwt;
 using Domain.Entities.Users.Models;
 using Domain.Entities.Users.Repository;

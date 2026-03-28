@@ -1,9 +1,10 @@
-﻿using Application.Services.Jwt;
+﻿using Application.Helpers.Hasher;
+using Application.Services.Jwt;
 using Domain.Entities.RefreshTokens.Repository;
+using Domain.Shared.Abstractions;
 using FastEndpoints;
 using Shared.Results;
 using System.Security.Cryptography;
-using System.Text;
 
 
 namespace Application.Features.Auth.GenerateRefreshToken;
@@ -11,19 +12,23 @@ namespace Application.Features.Auth.GenerateRefreshToken;
 public class GenerateRefreshTokenCommandHandler : CommandHandler<GenerateRefreshTokenCommand, Result<string>>
 {
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public GenerateRefreshTokenCommandHandler
-        (IRefreshTokenRepository refreshTokenRepository)
+        (IRefreshTokenRepository refreshTokenRepository,
+        IUnitOfWork unitOfWork)
     {
         _refreshTokenRepository = refreshTokenRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async override Task<Result<string>> ExecuteAsync(GenerateRefreshTokenCommand command, CancellationToken ct = default)
     {
         var req = command.Request;
-        using var sha256 = SHA256.Create();
+
         var refreshTokenString = GenerateRandomString(JwtSettings.SecretKey);
-        var refreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshTokenString));
+        var refreshTokenHash = HasherHelper.ComputeRefreshTokenHash(refreshTokenString);
+
         DateTime created = DateTime.UtcNow;
         DateTime expired = DateTime.UtcNow.AddMinutes(JwtSettings.RefreshTokenExpirationInMinutes);
 
@@ -31,11 +36,14 @@ public class GenerateRefreshTokenCommandHandler : CommandHandler<GenerateRefresh
         {
             Id = Guid.NewGuid(),
             UserId = Guid.Parse(req.UserId),
-            TokenHash = Convert.ToBase64String(refreshTokenHash),
+            TokenHash = refreshTokenHash,
             CreatedAt = created,
             ExpiresAt = expired,
+
         };
         await _refreshTokenRepository.CreateAsync(refreshTokenEntity);
+
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return Result<string>.Success(refreshTokenString);
     }

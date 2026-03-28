@@ -1,16 +1,17 @@
 ﻿using Application.Features.Auth.GenerateRefreshToken;
 using Application.Features.Auth.Shared.Response;
+using Application.Helpers.Hasher;
 using Application.Services.Jwt;
 using Domain.Entities.RefreshTokens.Repository;
 using Domain.Entities.Users.Repository;
+using Domain.Shared.Abstractions;
+using Domain.Specifications.RefreshTokens;
 using Domain.Specifications.Users;
 using FastEndpoints;
 using Shared.Results;
 using Shared.Results.Errors.Auth;
 using Shared.Results.Errors.RefreshToken;
 using Shared.Results.Errors.User;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Application.Features.Auth.RefreshToken;
 
@@ -19,26 +20,26 @@ public class RefreshTokenCommandHandler : CommandHandler<RefreshTokenCommand, Re
     private readonly IJwtServices _jwtServices;
     private readonly IUserRepository _userRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RefreshTokenCommandHandler
         (IJwtServices jwtServices,
         IUserRepository userRepository,
-        IRefreshTokenRepository refreshTokenRepository)
+        IRefreshTokenRepository refreshTokenRepository,
+        IUnitOfWork unitOfWork)
     {
         _jwtServices = jwtServices;
         _userRepository = userRepository;
         _refreshTokenRepository = refreshTokenRepository;
+        _unitOfWork = unitOfWork;
     }
     public async override Task<Result<AuthTokenResponse>> ExecuteAsync(RefreshTokenCommand command, CancellationToken ct = default)
     {
         var req = command.Request;
 
-        using var sha256 = SHA256.Create();
-        var refreshTokenHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(req.RefreshToken));
-        var refreshTokenCompare = Convert.ToBase64String(refreshTokenHash);
+        var refreshTokenHash = HasherHelper.ComputeRefreshTokenHash(req.RefreshToken);
 
-
-        var existRefreshToken = await _refreshTokenRepository.GetByRefreshTokenAsync(refreshTokenCompare, ct);
+        var existRefreshToken = await _refreshTokenRepository.FirstOrDefaultAsync(new RefreshTokenByTokenSpecification(refreshTokenHash), ct);
 
         if (existRefreshToken is null)
             return Result<AuthTokenResponse>.Failure(RefreshTokenErrors.NotFound);
@@ -61,10 +62,13 @@ public class RefreshTokenCommandHandler : CommandHandler<RefreshTokenCommand, Re
 
         var refreshToken = await commandRf.ExecuteAsync(ct);
 
-        var replaceHash = sha256.ComputeHash(Encoding.UTF8.GetBytes(refreshToken.Value!));
-        existRefreshToken!.ReplacedByTokenHash = Convert.ToBase64String(replaceHash);
+        existRefreshToken!.ReplacedByTokenHash = HasherHelper.ComputeRefreshTokenHash(refreshToken.Value!);
         existRefreshToken!.RevokedAt = DateTime.UtcNow;
-        await _refreshTokenRepository.UpdateAsync(existRefreshToken);
+
+
+        await _refreshTokenRepository.UpdateAsync(existRefreshToken , ct);
+
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return Result<AuthTokenResponse>.Success(new AuthTokenResponse
         {

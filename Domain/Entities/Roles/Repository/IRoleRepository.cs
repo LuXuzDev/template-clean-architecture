@@ -1,8 +1,8 @@
 ﻿using Domain.Entities.Roles.Models;
+using Domain.Shared.Abstractions;
 
 namespace Domain.Entities.Roles.Repository;
 
-public interface IRoleRepository
+public interface IRoleRepository : IRepository<Role>
 {
-    Task<Role?> GetByNameAsync(string name, CancellationToken ct);
 }

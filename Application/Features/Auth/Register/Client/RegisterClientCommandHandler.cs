@@ -1,12 +1,14 @@
 ﻿using Application.Features.Auth.GenerateRefreshToken;
 using Application.Features.Auth.Shared.Response;
-using Application.Helpers;
+using Application.Helpers.Hasher;
 using Application.Services.DataProtector;
 using Application.Services.Jwt;
 using Domain.Entities.Roles.Constants;
 using Domain.Entities.Roles.Repository;
 using Domain.Entities.Users.Models;
 using Domain.Entities.Users.Repository;
+using Domain.Shared.Abstractions;
+using Domain.Specifications.Roles;
 using Domain.Specifications.Users;
 using FastEndpoints;
 using Microsoft.AspNetCore.Identity;
@@ -23,19 +25,22 @@ public class RegisterClientCommandHandler : CommandHandler<RegisterClientCommand
     private readonly IRoleRepository _roleRepository;
     private readonly IPasswordHasher<User> _passwordHasherService;
     private readonly IDataProtectorFactory _dataProtectorFactory;
+    private readonly IUnitOfWork _unitOfWork;
 
     public RegisterClientCommandHandler
         (IUserRepository userRepository,
          IRoleRepository roleRepository,
          IPasswordHasher<User> passwordHasherService,
          IJwtServices jwtServices,
-         IDataProtectorFactory dataProtectorFactory)
+         IDataProtectorFactory dataProtectorFactory,
+         IUnitOfWork unitOfWork)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
         _passwordHasherService = passwordHasherService;
         _jwtServices = jwtServices;
         _dataProtectorFactory = dataProtectorFactory;
+        _unitOfWork = unitOfWork;
     }
 
     public override async Task<Result<AuthTokenResponse>> ExecuteAsync(RegisterClientCommand command, CancellationToken ct)
@@ -48,7 +53,7 @@ public class RegisterClientCommandHandler : CommandHandler<RegisterClientCommand
         if (emailExist)
             return Result<AuthTokenResponse>.Failure(UserErrors.EmailInUse);
 
-        var role = await _roleRepository.GetByNameAsync(RoleConstants.Client, ct);
+        var role = await _roleRepository.FirstOrDefaultAsync(new RoleByNameSpecification(RoleConstants.Client), ct);
 
         if (role is null)
             return Result<AuthTokenResponse>.Failure(RoleErrors.NotFound);
@@ -77,7 +82,7 @@ public class RegisterClientCommandHandler : CommandHandler<RegisterClientCommand
 
         var refreshTokenResult = await commandRf.ExecuteAsync(ct);
 
-
+        await _unitOfWork.SaveChangesAsync(ct);
         return Result<AuthTokenResponse>.Success(new AuthTokenResponse
         {
             Token = _jwtServices.GenerateToken(user),

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.RefreshTokens.Repository;
 using Domain.Entities.Roles.Repository;
 using Domain.Entities.Users.Repository;
+using Domain.Shared.Abstractions;
 using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Seeders;
@@ -31,6 +32,8 @@ public static class InfrastructureServices
 
         #endregion
 
+
+        services.AddScoped<IUnitOfWork , UnitOfWork>();
 
         return services;
     }

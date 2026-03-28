@@ -1,4 +1,4 @@
-﻿using Application.Helpers;
+﻿using Application.Helpers.Hasher;
 using Application.Services.DataProtector;
 using Domain.Entities.Roles.Constants;
 using Domain.Entities.Users.Models;

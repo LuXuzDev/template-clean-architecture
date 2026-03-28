@@ -1,6 +1,7 @@
 ﻿using Application.Services.Jwt;
 using Domain.Entities.RefreshTokens.Repository;
 using Domain.Entities.Users.Repository;
+using Domain.Specifications.BlackListTokens;
 using Domain.Specifications.Users;
 using Microsoft.AspNetCore.Http;
 
@@ -41,11 +42,9 @@ public class CurrentUserService : ICurrentUserService
         // Extraer solo el token
         var accessToken = authHeader.Substring("Bearer ".Length).Trim();
 
-        if (await _tokenBlackListRepository.ExistsAsync(accessToken, ct))
+        if (await _tokenBlackListRepository.AnyAsync(new BlackListTokenByTokenSpecification(accessToken), ct))
             return null; // token bloqueado
 
-        if (await _tokenBlackListRepository.ExistsAsync(accessToken, ct))
-            return null;
 
         // 🔹 Extrae claims del token
         var userClaims = _jwtService.ExtractUserClaimsFromHttpContext(httpContext);
