@@ -51,12 +51,12 @@ public class RegisterClientCommandHandler : CommandHandler<RegisterClientCommand
         var emailExist = await _userRepository.AnyAsync(new UserByEmailSpecification(HasherHelper.Hash(req.Email)), ct);
 
         if (emailExist)
-            return Result<AuthTokenResponse>.Failure(UserErrors.EmailInUse);
+            return Result<AuthTokenResponse>.Failure(UserError.EmailInUse);
 
         var role = await _roleRepository.FirstOrDefaultAsync(new RoleByNameSpecification(RoleConstants.Client), ct);
 
         if (role is null)
-            return Result<AuthTokenResponse>.Failure(RoleErrors.NotFound);
+            return Result<AuthTokenResponse>.Failure(RoleError.NotFound);
 
 
         var user = new User

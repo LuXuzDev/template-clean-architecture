@@ -2,7 +2,7 @@
 using Application.Services.DataProtector;
 using Domain.Entities.Roles.Constants;
 using Domain.Entities.Users.Models;
-using LuxuzDev.PersonalLogger;
+using Loop.PersonalLogger;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,13 +66,13 @@ public static class UserSeeder
             await context.SaveChangesAsync();
 
             PersonalLogger.Log(
-                $"👤 Se agregaron {usersToInsert.Count} usuarios: " +
+                $"Se agregaron {usersToInsert.Count} usuarios: " +
                 string.Join(", ", usersToInsert.Select(u => emailProtector.Unprotect(u.EncryptedEmail)))
             );
         }
         else
         {
-            PersonalLogger.Log("👤 Todos los usuarios base ya existen.");
+            PersonalLogger.Log("Todos los usuarios base ya existen.");
         }
     }
 }

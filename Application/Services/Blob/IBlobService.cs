@@ -36,9 +36,4 @@ public interface IBlobService
     /// Valida si un blob existe dado su Key.
     /// </summary>
     Task<Result<bool>> ValidateBlobExistenceAsync(string key, CancellationToken ct = default);
-
-    /// <summary>
-    /// Valida la conexión con el Blob.
-    /// </summary>
-    Task<bool> ValidateConnectionAsync(CancellationToken ct = default);
 }

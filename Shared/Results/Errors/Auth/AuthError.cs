@@ -1,7 +1,7 @@
 ﻿namespace Shared.Results.Errors.Auth;
 
 
-public static class AuthErrors
+public static class AuthError
 {
     /// <summary>
     /// Usuario no autorizado (sin token o token inválido)

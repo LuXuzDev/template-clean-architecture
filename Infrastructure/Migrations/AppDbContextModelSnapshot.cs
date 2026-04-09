@@ -22,7 +22,7 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.RefreshTokens.Models.RefreshToken", b =>
+            modelBuilder.Entity("Domain.Entities.RefreshTokens.Models.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("Domain.RefreshTokens.Models.TokenBlackList", b =>
+            modelBuilder.Entity("Domain.Entities.RefreshTokens.Models.TokenBlackList", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,7 +86,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("TokenBlackList");
                 });
 
-            modelBuilder.Entity("Domain.Roles.Models.Role", b =>
+            modelBuilder.Entity("Domain.Entities.Roles.Models.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,7 +110,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Domain.Users.Models.User", b =>
+            modelBuilder.Entity("Domain.Entities.Users.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,9 +147,9 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Domain.Users.Models.User", b =>
+            modelBuilder.Entity("Domain.Entities.Users.Models.User", b =>
                 {
-                    b.HasOne("Domain.Roles.Models.Role", "Role")
+                    b.HasOne("Domain.Entities.Roles.Models.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)

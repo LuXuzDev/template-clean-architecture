@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Roles.Constants;
 using Domain.Entities.Roles.Models;
-using LuxuzDev.PersonalLogger;
+using Loop.PersonalLogger;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -29,11 +29,11 @@ public static class RoleSeeder
         {
             context.Roles.AddRange(rolesToInsert);
             await context.SaveChangesAsync();
-            PersonalLogger.Log($"🛡️ Se agregaron {rolesToInsert.Count} roles: {string.Join(", ", rolesToInsert.Select(r => r.Name))}.");
+            PersonalLogger.Log($"Se agregaron {rolesToInsert.Count} roles: {string.Join(", ", rolesToInsert.Select(r => r.Name))}.");
         }
         else
         {
-            PersonalLogger.Log("🛡️ Todos los roles ya existen. No se realizaron cambios.");
+            PersonalLogger.Log("Todos los roles ya existen. No se realizaron cambios.");
         }
     }
 }

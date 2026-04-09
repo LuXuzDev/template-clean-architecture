@@ -42,15 +42,15 @@ public class RefreshTokenCommandHandler : CommandHandler<RefreshTokenCommand, Re
         var existRefreshToken = await _refreshTokenRepository.FirstOrDefaultAsync(new RefreshTokenByTokenSpecification(refreshTokenHash), ct);
 
         if (existRefreshToken is null)
-            return Result<AuthTokenResponse>.Failure(RefreshTokenErrors.NotFound);
+            return Result<AuthTokenResponse>.Failure(RefreshTokenError.NotFound);
 
         if (existRefreshToken!.CreatedAt.AddHours(JwtSettings.RefreshTokenExpirationInMinutes) < DateTime.UtcNow)
-            return Result<AuthTokenResponse>.Failure(AuthErrors.TokenExpired);
+            return Result<AuthTokenResponse>.Failure(AuthError.TokenExpired);
 
 
         var userEntity = await _userRepository.FirstOrDefaultAsync(new UserByIdSpecification(existRefreshToken.UserId), ct);
         if (userEntity is null)
-            return Result<AuthTokenResponse>.Failure(UserErrors.NotFound);
+            return Result<AuthTokenResponse>.Failure(UserError.NotFound);
 
         var commandRf = new GenerateRefreshTokenCommand
         {

@@ -13,14 +13,14 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithState(_ => new ValidationError(
-                Code: AuthErrors.EmailRequired.Code,
-                Message: AuthErrors.EmailRequired.Message,
+                Code: AuthError.EmailRequired.Code,
+                Message: AuthError.EmailRequired.Message,
                 PropertyName: nameof(LoginRequest.Email)
             ))
             .EmailAddress()
             .WithState(_ => new ValidationError(
-                Code: AuthErrors.InvalidEmailFormat.Code,
-                Message: AuthErrors.InvalidEmailFormat.Message,
+                Code: AuthError.InvalidEmailFormat.Code,
+                Message: AuthError.InvalidEmailFormat.Message,
                 PropertyName: nameof(LoginRequest.Email)
             ));
 
@@ -28,8 +28,8 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
         RuleFor(x => x.Password)
             .NotEmpty()
             .WithState(_ => new ValidationError(
-                Code: AuthErrors.PasswordRequired.Code,
-                Message: AuthErrors.PasswordRequired.Message,
+                Code: AuthError.PasswordRequired.Code,
+                Message: AuthError.PasswordRequired.Message,
                 PropertyName: nameof(LoginRequest.Password)
             ));
     }

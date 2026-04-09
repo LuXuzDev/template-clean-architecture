@@ -3,7 +3,7 @@ using Domain.Entities.Roles.Constants;
 using Domain.Entities.Users.Repository;
 using Domain.Specifications.Users;
 using FastEndpoints;
-using LuxuzDev.PersonalLogger;
+using Loop.PersonalLogger;
 using Shared.Results;
 using IMapper = AutoMapper.IMapper;
 

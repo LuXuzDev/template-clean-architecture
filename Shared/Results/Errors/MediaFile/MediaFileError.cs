@@ -1,6 +1,6 @@
 ﻿namespace Shared.Results.Errors.MediaFile;
 
-public static class MediaFileErros
+public static class MediaFileError
 {
     public static readonly Error InvalidFile =
         new("INVALID_FILE", "File not valid", 400);

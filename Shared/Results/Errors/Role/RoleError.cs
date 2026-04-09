@@ -1,6 +1,6 @@
 ﻿namespace Shared.Results.Errors.Role;
 
-public static class RoleErrors
+public static class RoleError
 {
     /// <summary>
     /// Error que indica que el rol no fue encontrado en la base de datos.

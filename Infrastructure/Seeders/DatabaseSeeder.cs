@@ -1,7 +1,7 @@
 ﻿using Application.Services.Blob;
 using Application.Services.DataProtector;
 using Domain.Entities.Users.Models;
-using LuxuzDev.PersonalLogger;
+using Loop.PersonalLogger;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,15 +22,15 @@ public static class DatabaseSeeder
         var webHost = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
         var blobService = scope.ServiceProvider.GetRequiredService<IBlobService>();
 
-        PersonalLogger.Log("🔄 Aplicando migraciones de base de datos...", LogType.Info);
+        PersonalLogger.Log("Aplicando migraciones de base de datos...", LogType.Info);
         await context.Database.MigrateAsync();
-        PersonalLogger.Log("✅ Migraciones aplicadas correctamente.", LogType.Success);
+        PersonalLogger.Log("Migraciones aplicadas correctamente.", LogType.Success);
 
-        PersonalLogger.Log("🌱 Iniciando seeding de base de datos...", LogType.Info);
+        PersonalLogger.Log("Iniciando seeding de base de datos...", LogType.Info);
 
         await RoleSeeder.SeedRolesAsync(context);
         await UserSeeder.SeedUsersAsync(context, passwordService, dataProtectorFactory);
 
-        PersonalLogger.Log("✅ Seeding completado correctamente.", LogType.Success);
+        PersonalLogger.Log("Seeding completado correctamente.", LogType.Success);
     }
 }

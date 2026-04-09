@@ -1,6 +1,6 @@
 ﻿namespace Shared.Results.Errors.User;
 
-public static class UserErrors
+public static class UserError
 {
     /// <summary>
     /// Error que indica que el usuario no fue encontrado en la base de datos.

@@ -1,5 +1,6 @@
+using Application.Services.PersonalLoggerNotifier;
 using Domain.Exceptions;
-using LuxuzDev.PersonalLogger;
+using Loop.PersonalLogger;
 
 namespace Api.Middlewares;
 
@@ -30,6 +31,7 @@ public class ExceptionMiddleware
 
         int statusCode;
         object response;
+        string logMessage;
 
         if (exception is ApiException apiException)
         {
@@ -40,8 +42,18 @@ public class ExceptionMiddleware
                 status = statusCode,
                 message = apiException.ErrorMessage,
                 details = apiException.ErrorDetails,
-                date = DateTime.UtcNow.ToString()
+                date = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
             };
+
+            logMessage = $@"
+                [API ERROR]
+                Status: {statusCode}
+                Message: {apiException.ErrorMessage}
+                Details: {apiException.ErrorDetails}
+                Path: {context.Request.Path}
+                Method: {context.Request.Method}
+                Date: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}
+                ";
         }
         else
         {
@@ -53,21 +65,22 @@ public class ExceptionMiddleware
                 code = "UNEXPECTED_ERROR",
                 message = "Ocurrió un error inesperado",
                 details = exception.Message,
-                date = DateTime.UtcNow.ToString()
+                date = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
             };
 
-            var logMessage = $@"
-                [ERROR]
+            logMessage = $@"
+                [UNHANDLED ERROR]
                 Type: {exception.GetType().Name}
                 Message: {exception.Message}
                 Path: {context.Request.Path}
                 Method: {context.Request.Method}
                 TraceId: {context.TraceIdentifier}
-                Date: {DateTime.UtcNow:O}
+                Date: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}
                 ";
-
-            PersonalLogger.Log(logMessage, LogType.Error);
         }
+
+        PersonalLogger.Log(logMessage, LogType.Error, PersonalLoggerName.Name);
+
         context.Response.StatusCode = statusCode;
         await context.Response.WriteAsJsonAsync(response);
     }

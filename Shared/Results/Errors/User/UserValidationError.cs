@@ -1,6 +1,6 @@
 ﻿namespace Shared.Results.Errors.User;
 
-public static class UserValidationErrors
+public static class UserValidationError
 {
     public static readonly ValidationError EmailRequired =
         new("EMAIL_REQUIRED", "Email is required", "Email");

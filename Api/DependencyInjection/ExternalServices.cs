@@ -1,6 +1,10 @@
 ﻿using Application.Services.Blob;
 using Application.Services.Blob.Minio;
-using LuxuzDev.PersonalLogger;
+using Application.Services.ExternalHealthCheck.Enums;
+using Application.Services.ExternalHealthCheck.Implementations;
+using Application.Services.ExternalHealthCheck.Interface;
+using Application.Services.PersonalLoggerNotifier;
+using Loop.PersonalLogger;
 using Microsoft.Extensions.Options;
 using Minio;
 using Shared.Exception;
@@ -34,33 +38,61 @@ public static class ExternalServices
         services.AddScoped<IBlobService, MinioBlobService>();
         #endregion
 
+        #region Health Checks
+
+        services.AddSingleton<IExternalHealthCheck, PostgresHealthCheck>();
+        services.AddSingleton<IExternalHealthCheck, MinioHealthCheck>();
+        services.AddSingleton<ExternalHealthService>();
+
+        #endregion
 
         return services;
     }
 
-    /// <summary>
-    /// Revisa la conectividad y disponibilidad del servicio MinIO al iniciar la aplicación.
-    /// </summary>
-    /// <param name="app">Instancia de la aplicación.</param>
-    /// <returns></returns>
-    public static async Task CheckMinioServiceAsync(this WebApplication app)
+
+    public static async Task CheckExternalHealthAsync(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
+        var healthService = scope.ServiceProvider.GetRequiredService<ExternalHealthService>();
+        var report = await healthService.CheckAllAsync(CancellationToken.None);
 
-
-        var blobService = scope.ServiceProvider.GetRequiredService<IBlobService>();
-
-        if (blobService is MinioBlobService minioService)
+        foreach (var result in report.Value!.Services)
         {
-            var isConnected = await minioService.ValidateConnectionAsync();
-            if (isConnected)
-                PersonalLogger.Log("✅ MinIO está conectado y operativo.", LogType.Success);
+            if (result.IsCritical && result.Status != ExternalServiceStatus.Healthy)
+            {
+                if (result.Error != null && result.Error.HttpCode >= 500 &&result.Error.Code.Contains("CONFIG"))
+                {
+                    PersonalLogger.Log(
+                        $"[ERROR DE CONFIGURACIÓN] Servicio crítico {result.Name} falló. Estado: {result.Status}. Detalle: {result.Error.Message}",
+                        LogType.Error,
+                        PersonalLoggerName.Name
+                    );
+
+                    ExceptionHelper.ThrowConfiguration(
+                        $"Critical service {result.Name} failed. Status: {result.Status}. Detalle: {result.Error.Message}"
+                    );
+                }
+                else
+                {
+                    PersonalLogger.Log(
+                        $"[ERROR DE SERVICIO EXTERNO] Servicio crítico {result.Name} falló. Estado: {result.Status}. Detalle: {result.Error?.Message ?? "Sin detalles"}",
+                        LogType.Error,
+                        PersonalLoggerName.Name
+                    );
+
+                    ExceptionHelper.ThrowExternalService(
+                        $"Critical service {result.Name} failed. Status: {result.Status}. Detalle: {result.Error?.Message ?? "No details"}"
+                    );
+                }
+            }
+            else if (!result.IsCritical && result.Status != ExternalServiceStatus.Healthy)
+            {
+                PersonalLogger.Log($"Servicio no crítico {result.Name} Estado: {result.Status}. Continuando con la ejecución.", LogType.Warning, PersonalLoggerName.Name);
+            }
             else
-                ExceptionHelper.ThrowExternalService("❌ Minio no esta disponible");
-        }
-        else
-        {
-            PersonalLogger.Log("⚠️ No se encontró una implementación válida de MinioService.");
+            {
+                PersonalLogger.Log($"Servicio {result.Name} está saludable.", LogType.Success, PersonalLoggerName.Name);
+            }
         }
     }
 }

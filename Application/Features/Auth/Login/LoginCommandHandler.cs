@@ -34,11 +34,11 @@ public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthToken
         var userEntity = await _userRepository.FirstOrDefaultAsync(new UserByEmailSpecification(HasherHelper.Hash(req.Email)), ct);
 
         if (userEntity is null)
-            return Result<AuthTokenResponse>.Failure(AuthErrors.InvalidCredentials);
+            return Result<AuthTokenResponse>.Failure(AuthError.InvalidCredentials);
 
         var isPasswordCorrect = _passwordHasher.VerifyHashedPassword(null!, userEntity!.Password, req.Password);
         if (isPasswordCorrect == PasswordVerificationResult.Failed)
-            return Result<AuthTokenResponse>.Failure(AuthErrors.InvalidCredentials);
+            return Result<AuthTokenResponse>.Failure(AuthError.InvalidCredentials);
 
 
         var commandRf = new GenerateRefreshTokenCommand

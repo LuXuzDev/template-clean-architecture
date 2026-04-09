@@ -1,14 +1,26 @@
 using Api.DependencyInjection;
 using Api.Middlewares;
+using Application.Services.PersonalLoggerNotifier;
+using Application.Services.PersonalLoggerNotifier.Telegram;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using LuxuzDev.PersonalLogger;
+using Loop.PersonalLogger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region PersonalLoggerConfiguration
 
 PersonalLogger.Initialize();
+
+if (builder.Environment.IsProduction())
+{
+    var telegramSettings = builder.Configuration
+    .GetSection("PersonalLogger:Telegram")
+    .Get<TelegramSettings>();
+
+    var telegramNotifier = new TelegramNotifier(telegramSettings!.BotToken, telegramSettings.ChatIds);
+    PersonalLogger.Configure(telegramNotifier);
+}
 
 #endregion
 
@@ -38,14 +50,53 @@ builder.Services.SwaggerDocument(o =>
 #endregion
 
 
+#region Configuración de CORS para DESARROLLO
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAllOrigins", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+    });
+}
+// Configuración de CORS para PRODUCCIÓN
+else
+{
+    var allowedOrigins = builder.Configuration
+            .GetSection("CorsSettings:AllowedOrigins")
+            .Get<string[]>() ?? Array.Empty<string>();
+
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("ProductionPolicy", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+    });
+}
+
+#endregion
+
+
 var app = builder.Build();
 
 
-// Revisar disponibilidad minio
-await app.CheckMinioServiceAsync();
+
+// Revisar disponibilidad de servicios Externos
+await app.CheckExternalHealthAsync();
 
 // Aplicar migraciones y seeders
 await app.UseDatabaseSeederAsync();
+
+PersonalLogger.Log("Inicio correctamente", LogType.Success, PersonalLoggerName.Name);
 
 if (app.Environment.IsDevelopment())
 {
@@ -54,6 +105,17 @@ if (app.Environment.IsDevelopment())
 
 #region AppUse
 
+if (builder.Environment.IsDevelopment())
+{
+    app.UseCors("AllowAllOrigins");
+}
+else
+{
+    app.UseCors("ProductionPolicy");
+}
+
+
+app.UseMiddleware<SwaggerAuthMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

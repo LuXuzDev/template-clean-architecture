@@ -9,4 +9,5 @@ public class MinioSettings
     public string SecretKey { get; set; } = string.Empty;
     public string Bucket { get; set; } = string.Empty;
     public bool UseSsl { get; set; } = false;
+    public int Port { get; set; }
 }

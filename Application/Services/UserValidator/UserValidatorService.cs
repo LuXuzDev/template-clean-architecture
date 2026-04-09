@@ -23,10 +23,10 @@ public class UserValidatorService : IUserValidatorService
         var userClaims = await _currentUserService.GetValidatedUserAsync(ct);
 
         if (userClaims is null)
-            return Result<UserClaims>.Failure(AuthErrors.Unauthorized);
+            return Result<UserClaims>.Failure(AuthError.Unauthorized);
 
         if (roles.Any() && !roles.Any(r => userClaims!.Role!.Contains(r)))
-            return Result<UserClaims>.Failure(AuthErrors.Forbidden);
+            return Result<UserClaims>.Failure(AuthError.Forbidden);
 
         return Result<UserClaims>.Success(userClaims);
     }

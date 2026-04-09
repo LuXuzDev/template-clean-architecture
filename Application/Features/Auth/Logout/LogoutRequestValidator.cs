@@ -12,8 +12,8 @@ public class LogoutRequestValidator : AbstractValidator<LogoutRequest>
         RuleFor(x => x.Token)
             .NotEmpty()
             .WithState(_ => new ValidationError(
-                Code: AuthErrors.TokenRequired.Code,
-                Message: AuthErrors.TokenRequired.Message,
+                Code: AuthError.TokenRequired.Code,
+                Message: AuthError.TokenRequired.Message,
                 PropertyName: nameof(LogoutRequest.Token)
                 ));
 
@@ -21,8 +21,8 @@ public class LogoutRequestValidator : AbstractValidator<LogoutRequest>
         RuleFor(x => x.RefreshToken)
             .NotEmpty()
             .WithState(_ => new ValidationError(
-                Code: AuthErrors.RefreshTokenRequired.Code,
-                Message: AuthErrors.RefreshTokenRequired.Message,
+                Code: AuthError.RefreshTokenRequired.Code,
+                Message: AuthError.RefreshTokenRequired.Message,
                 PropertyName: nameof(RefreshTokenRequest.RefreshToken)
                 ));
     }

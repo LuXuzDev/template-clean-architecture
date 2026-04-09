@@ -12,8 +12,8 @@ public class RefreshTokenRequestValidator : AbstractValidator<RefreshTokenReques
         RuleFor(x => x.RefreshToken)
             .NotEmpty()
             .WithState(_ => new ValidationError(
-                Code: AuthErrors.RefreshTokenRequired.Code,
-                Message: AuthErrors.RefreshTokenRequired.Message,
+                Code: AuthError.RefreshTokenRequired.Code,
+                Message: AuthError.RefreshTokenRequired.Message,
                 PropertyName: "RefreshToken"
                 ));
     }

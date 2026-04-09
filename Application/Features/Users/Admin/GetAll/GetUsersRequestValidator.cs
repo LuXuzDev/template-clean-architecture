@@ -12,30 +12,30 @@ public class GetUsersRequestValidator : AbstractValidator<GetUsersRequest>
         RuleFor(x => x.PageNumber)
             .Must(PaginationValidator.BeValidPageNumber)
             .WithState(_ => new ValidationError(
-                Code: PaginationErrors.InvalidPageNumber.Code,
-                Message: PaginationErrors.InvalidPageNumber.Message,
+                Code: PaginationError.InvalidPageNumber.Code,
+                Message: PaginationError.InvalidPageNumber.Message,
                 PropertyName: nameof(GetUsersRequest.PageNumber)
             ));
 
         RuleFor(x => x.PageSize)
             .GreaterThanOrEqualTo(1)
             .WithState(_ => new ValidationError(
-                Code: PaginationErrors.PageSizeTooSmall.Code,
-                Message: PaginationErrors.PageSizeTooSmall.Message,
+                Code: PaginationError.PageSizeTooSmall.Code,
+                Message: PaginationError.PageSizeTooSmall.Message,
                 PropertyName: nameof(GetUsersRequest.PageSize)
             ))
             .LessThanOrEqualTo(100)
             .WithState(_ => new ValidationError(
-                Code: PaginationErrors.PageSizeTooLarge.Code,
-                Message: PaginationErrors.PageSizeTooLarge.Message,
+                Code: PaginationError.PageSizeTooLarge.Code,
+                Message: PaginationError.PageSizeTooLarge.Message,
                 PropertyName: nameof(GetUsersRequest.PageSize)
             ));
 
         RuleFor(x => x.SortBy)
         .IsInEnum()
         .WithState(_ => new ValidationError(
-            Code: PaginationErrors.InvalidSortBy.Code,
-            Message: PaginationErrors.InvalidSortBy.Message,
+            Code: PaginationError.InvalidSortBy.Code,
+            Message: PaginationError.InvalidSortBy.Message,
             PropertyName: nameof(GetUsersRequest.SortBy)
         ));
     }

@@ -13,15 +13,15 @@ public class GenerateRefreshTokenRequestValidator : AbstractValidator<GenerateRe
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithState(_ => new ValidationError(
-                Code: UserErrors.InvalidGuidFormat.Code,
-                Message: UserErrors.InvalidGuidFormat.Message,
+                Code: UserError.InvalidGuidFormat.Code,
+                Message: UserError.InvalidGuidFormat.Message,
                 PropertyName: nameof(GenerateRefreshTokenRequest.UserId)
             ))
 
             .Must(GuidValidator.BeValidGuid)
             .WithState(_ => new ValidationError(
-                Code: UserErrors.InvalidGuidFormat.Code,
-                Message: UserErrors.InvalidGuidFormat.Message,
+                Code: UserError.InvalidGuidFormat.Code,
+                Message: UserError.InvalidGuidFormat.Message,
                 PropertyName: nameof(GenerateRefreshTokenRequest.UserId)
             ));
     }

@@ -121,7 +121,7 @@ public static class ApplicationServices
                             return;
 
                         // Construye tu resultado genérico con AuthErrors.Unauthorized
-                        var response = Result<object>.Failure(AuthErrors.Unauthorized);
+                        var response = Result<object>.Failure(AuthError.Unauthorized);
 
                         ctx.HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         ctx.HttpContext.Response.ContentType = "application/json";

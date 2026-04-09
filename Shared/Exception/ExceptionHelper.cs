@@ -1,4 +1,5 @@
 ﻿using Domain.Exceptions;
+using Loop.PersonalLogger;
 
 namespace Shared.Exception;
 

@@ -3,7 +3,7 @@ using Domain.Entities.RefreshTokens.Repository;
 using Domain.Shared.Abstractions;
 using Domain.Specifications.BlackListTokens;
 using Domain.Specifications.RefreshTokens;
-using LuxuzDev.PersonalLogger;
+using Loop.PersonalLogger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 

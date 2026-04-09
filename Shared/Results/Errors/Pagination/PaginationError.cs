@@ -1,6 +1,6 @@
 ﻿namespace Shared.Results.Errors.Pagination;
 
-public static class PaginationErrors
+public static class PaginationError
 {
     /// <summary>
     /// Error que indica que el número de página debe ser mayor o igual a 1.
