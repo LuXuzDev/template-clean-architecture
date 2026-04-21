@@ -18,17 +18,16 @@ public class GetUsersRequestValidator : AbstractValidator<GetUsersRequest>
             ));
 
         RuleFor(x => x.PageSize)
-            .GreaterThanOrEqualTo(1)
-            .WithState(_ => new ValidationError(
-                Code: PaginationError.PageSizeTooSmall.Code,
-                Message: PaginationError.PageSizeTooSmall.Message,
-                PropertyName: nameof(GetUsersRequest.PageSize)
-            ))
-            .LessThanOrEqualTo(100)
-            .WithState(_ => new ValidationError(
-                Code: PaginationError.PageSizeTooLarge.Code,
-                Message: PaginationError.PageSizeTooLarge.Message,
-                PropertyName: nameof(GetUsersRequest.PageSize)
+            .Must(pageSize => PaginationValidator.BeValidPageSize(pageSize) == 0)
+            .WithState(request => PaginationValidator.BeValidPageSize(request.PageSize) == -1
+                ? new ValidationError(
+                    Code: PaginationError.PageSizeTooSmall.Code,
+                    Message: PaginationError.PageSizeTooSmall.Message,
+                    PropertyName: nameof(GetUsersRequest.PageSize))
+                : new ValidationError(
+                    Code: PaginationError.PageSizeTooLarge.Code,
+                    Message: PaginationError.PageSizeTooLarge.Message,
+                    PropertyName: nameof(GetUsersRequest.PageSize)
             ));
 
         RuleFor(x => x.SortBy)
