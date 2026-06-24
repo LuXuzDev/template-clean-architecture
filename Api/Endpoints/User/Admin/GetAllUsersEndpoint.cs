@@ -11,7 +11,6 @@ public class GetAllUsersEndpoint : Endpoint<GetUsersRequest, Result<ResponseList
     public override void Configure()
     {
         Get("/admin/users");
-
         Summary(s =>
         {
             s.Summary = "Obtener todos los usuarios";

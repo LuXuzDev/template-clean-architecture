@@ -35,7 +35,7 @@ public class LogoutCommandHandler : CommandHandler<LogoutCommand, Result<string>
         var result = await _userValidatorService.ValidateAsync(ct);
         
         if(result.IsFailure)
-            return Result<string>.Failure(result.Error!);
+            return Result<string>.Failure(result.Errors!);
 
         var tokenHash = HasherHelper.ComputeRefreshTokenHash(req.RefreshToken);
 

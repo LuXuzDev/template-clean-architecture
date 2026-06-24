@@ -30,7 +30,7 @@ public class GetUsersQueryHandler : CommandHandler<GetUsersQuery , Result<Respon
         var userClaimsResult = await _userValidatorService.ValidateAsync(ct, [RoleConstants.Admin]);
 
         if(userClaimsResult.IsFailure)
-            return Result<ResponseListBase<GetUserResponse>>.Failure(userClaimsResult.Error!);
+            return Result<ResponseListBase<GetUserResponse>>.Failure(userClaimsResult.Errors!);
 
         var req = query.Request;
         var spec = new UsersPagedSpecification(req.PageNumber, req.PageSize, req.SortBy, req.Descending);

@@ -1,3 +1,4 @@
+using Application;
 using Application.Services.PersonalLoggerNotifier;
 using Domain.Exceptions;
 using Loop.PersonalLogger;
@@ -79,7 +80,7 @@ public class ExceptionMiddleware
                 ";
         }
 
-        PersonalLogger.Log(logMessage, LogType.Error, PersonalLoggerName.Name);
+        PersonalLogger.Log(logMessage, LogType.Error, GlobalAppInfo.Name);
 
         context.Response.StatusCode = statusCode;
         await context.Response.WriteAsJsonAsync(response);

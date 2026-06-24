@@ -6,6 +6,7 @@ using Shared.Results;
 
 namespace Api.Endpoints.Auth;
 
+
 public class RegisterClientEndpoint : Endpoint<RegisterClientRequest, Result<AuthTokenResponse>>
 {
     public override void Configure()

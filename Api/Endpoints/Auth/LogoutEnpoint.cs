@@ -10,7 +10,6 @@ public class LogoutEnpoint : Endpoint<LogoutRequest, Result<string>>
     public override void Configure()
     {
         Post("/auth/logout");
-
         Summary(s =>
         {
             s.Summary = "Cerrar sesión";

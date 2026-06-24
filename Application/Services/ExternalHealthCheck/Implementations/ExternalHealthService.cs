@@ -1,6 +1,7 @@
 ﻿using Application.Services.ExternalHealthCheck.Enums;
 using Application.Services.ExternalHealthCheck.Interface;
 using Application.Services.ExternalHealthCheck.Response;
+using Application.Services.UserValidator;
 using Shared.Results;
 
 

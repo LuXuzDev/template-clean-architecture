@@ -11,9 +11,8 @@ public class HealthCheckEndpoint : EndpointWithoutRequest<Result<ExternalHealthR
 {
     public override void Configure()
     {
-        Get("/health/external");
+        Get("/health-check/external");
         AllowAnonymous();
-
         Summary(s =>
         {
             s.Summary = "Chequeo de salud de servicios externos";

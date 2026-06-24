@@ -1,9 +1,9 @@
-﻿using Application.Services.Blob;
+﻿using Application;
+using Application.Services.Blob;
 using Application.Services.Blob.Minio;
 using Application.Services.ExternalHealthCheck.Enums;
 using Application.Services.ExternalHealthCheck.Implementations;
 using Application.Services.ExternalHealthCheck.Interface;
-using Application.Services.PersonalLoggerNotifier;
 using Loop.PersonalLogger;
 using Microsoft.Extensions.Options;
 using Minio;
@@ -65,7 +65,7 @@ public static class ExternalServices
                     PersonalLogger.Log(
                         $"[ERROR DE CONFIGURACIÓN] Servicio crítico {result.Name} falló. Estado: {result.Status}. Detalle: {result.Error.Message}",
                         LogType.Error,
-                        PersonalLoggerName.Name
+                        GlobalAppInfo.Name
                     );
 
                     ExceptionHelper.ThrowConfiguration(
@@ -77,7 +77,7 @@ public static class ExternalServices
                     PersonalLogger.Log(
                         $"[ERROR DE SERVICIO EXTERNO] Servicio crítico {result.Name} falló. Estado: {result.Status}. Detalle: {result.Error?.Message ?? "Sin detalles"}",
                         LogType.Error,
-                        PersonalLoggerName.Name
+                        GlobalAppInfo.Name
                     );
 
                     ExceptionHelper.ThrowExternalService(
@@ -87,11 +87,11 @@ public static class ExternalServices
             }
             else if (!result.IsCritical && result.Status != ExternalServiceStatus.Healthy)
             {
-                PersonalLogger.Log($"Servicio no crítico {result.Name} Estado: {result.Status}. Continuando con la ejecución.", LogType.Warning, PersonalLoggerName.Name);
+                PersonalLogger.Log($"Servicio no crítico {result.Name} Estado: {result.Status}. Continuando con la ejecución.", LogType.Warning, GlobalAppInfo.Name);
             }
             else
             {
-                PersonalLogger.Log($"Servicio {result.Name} está saludable.", LogType.Success, PersonalLoggerName.Name);
+                PersonalLogger.Log($"Servicio {result.Name} está saludable.", LogType.Success, GlobalAppInfo.Name);
             }
         }
     }

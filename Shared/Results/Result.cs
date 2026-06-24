@@ -8,45 +8,44 @@ public class Result
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
 
-    public Error? Error { get; }
-    public IReadOnlyList<Error>? Errors { get; }
+    public IReadOnlyList<Error> Errors { get; }
 
-    protected Result(bool isSuccess, Error? error, IReadOnlyList<Error>? errors)
+    protected Result(bool isSuccess, IEnumerable<Error>? errors)
     {
-        if (isSuccess && (error != null || (errors != null && errors.Any())))
+        var list = errors?.ToList() ?? new List<Error>();
+
+        if (isSuccess && list.Count > 0)
             throw new ArgumentException("Success result cannot have errors");
 
-        if (!isSuccess && error == null && (errors == null || !errors.Any()))
+        if (!isSuccess && list.Count == 0)
             throw new ArgumentException("Failure result must have at least one error");
 
         IsSuccess = isSuccess;
-        Error = error;
-        Errors = errors;
+        Errors = list;
     }
 
     public static Result Success()
-        => new(true, null, null);
+        => new(true, null);
 
     public static Result Failure(Error error)
-        => new(false, error, null);
+        => new(false, new[] { error });
 
     public static Result Failure(IEnumerable<Error> errors)
-        => new(false, null, errors.ToList());
+        => new(false, errors);
 }
-
 
 public class Result<T> : Result
 {
     public T? Value { get; }
 
-    private Result(T value) : base(true, null, null)
+    private Result(T value) : base(true, null)
     {
         Value = value;
     }
 
-    private Result(Error error) : base(false, error, null) { }
+    private Result(Error error) : base(false, new List<Error> { error }) { }
 
-    private Result(IEnumerable<Error> errors) : base(false, null, errors.ToList()) { }
+    private Result(IEnumerable<Error> errors) : base(false, errors.ToList()) { }
 
     public static Result<T> Success(T value)
         => new(value);

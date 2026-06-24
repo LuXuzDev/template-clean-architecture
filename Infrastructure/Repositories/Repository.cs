@@ -53,6 +53,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
 
     public async Task UpdateAsync(T entity, CancellationToken ct)
     {
+        entity.UpdatedAt = DateTime.UtcNow;
         _dbContext.Set<T>().Update(entity);
     }
 
@@ -64,7 +65,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     public async Task SoftDeleteAsync(T entity, CancellationToken ct)
     {
         entity.IsDeleted = true;
-
+        entity.UpdatedAt = DateTime.UtcNow;
         _dbContext.Set<T>().Update(entity);
     }
 
@@ -100,6 +101,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         foreach (var entity in entitiesList)
         {
             entity.IsDeleted = true;
+            entity.UpdatedAt = DateTime.UtcNow;
         }
 
         if (entitiesList.Any())
@@ -136,6 +138,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         foreach (var entity in entitiesToUpdate)
         {
             entity.IsDeleted = true;
+            entity.UpdatedAt = DateTime.UtcNow;
         }
 
         if (entitiesToUpdate.Any())

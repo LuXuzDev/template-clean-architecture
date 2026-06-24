@@ -51,7 +51,7 @@ public class LoginCommandHandler : CommandHandler<LoginCommand, Result<AuthToken
         var refreshToken = await commandRf.ExecuteAsync(ct);
 
         if (refreshToken.IsFailure)
-            return Result<AuthTokenResponse>.Failure(refreshToken.Error!);
+            return Result<AuthTokenResponse>.Failure(refreshToken.Errors!);
 
 
         return Result<AuthTokenResponse>.Success(new AuthTokenResponse
