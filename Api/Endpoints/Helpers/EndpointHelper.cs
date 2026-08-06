@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Loop.PersonalLogger;
 using Shared.Results;
 using Shared.Results.Errors;
 

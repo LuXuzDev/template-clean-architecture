@@ -62,5 +62,5 @@ public interface IRepository<T> where T : BaseEntity
     /// <summary>
     /// Obtiene el total de entidades. Si se proporciona una especificación, aplica los filtros.
     /// </summary>
-    Task<int> TotalCount(CancellationToken ct, Specification<T>? spec = null);
+    Task<int> CountAsync(CancellationToken ct, Specification<T>? spec = null);
 }

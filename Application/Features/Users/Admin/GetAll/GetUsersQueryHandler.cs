@@ -35,7 +35,7 @@ public class GetUsersQueryHandler : CommandHandler<GetUsersQuery , Result<Respon
         var req = query.Request;
         var spec = new UsersPagedSpecification(req.PageNumber, req.PageSize, req.SortBy, req.Descending);
 
-        var userTotalCount = await _userRepository.TotalCount(ct);
+        var userTotalCount = await _userRepository.CountAsync(ct);
         var usersEntities = await _userRepository.ListAsync(ct, spec);
 
         var usersResponse = _mapper.Map<List<GetUserResponse>>(usersEntities);

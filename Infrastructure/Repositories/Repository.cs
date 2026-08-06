@@ -69,7 +69,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         _dbContext.Set<T>().Update(entity);
     }
 
-    public async Task<int> TotalCount(CancellationToken ct, Specification<T>? spec = null)
+    public async Task<int> CountAsync(CancellationToken ct, Specification<T>? spec = null)
     {
         if(spec is not null)
         {

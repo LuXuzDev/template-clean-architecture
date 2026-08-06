@@ -10,6 +10,11 @@ public sealed class UserByEmailSpecification : Specification<User>
 
         AddInclude(u => u.Role!);
         //Para hacen ThenInclude
-        //AddInclude(u => u.Roles.Select(r => r.Permissions));
+        /*
+        AddInclude(q => q
+        .Include(b => b.DishGroups)
+            .ThenInclude(dg => dg.Dishes)
+                .ThenInclude(d => d.DishImages));
+        */
     }
 }

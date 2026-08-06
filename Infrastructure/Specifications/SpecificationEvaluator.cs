@@ -15,13 +15,19 @@ public static class SpecificationEvaluator<T> where T : class
         if (spec.Criteria is not null)
             query = query.Where(spec.Criteria);
 
-        query = spec.Includes.Aggregate(query, 
+        if (spec.ShouldIgnoreQueryFilters)
+        {
+            query = query.IgnoreQueryFilters();
+        }
+
+
+        query = spec.Includes.Aggregate(query,
             (current, include) => current.Include(include));
 
-        query = spec.IncludeStrings.Aggregate(query, 
+        query = spec.IncludeStrings.Aggregate(query,
             (current, includeString) => current.Include(includeString));
 
-        query = spec.IncludeExpressions.Aggregate(query, 
+        query = spec.IncludeExpressions.Aggregate(query,
             (current, includeExpr) => includeExpr(current));
 
         if (spec.OrderBy is not null)

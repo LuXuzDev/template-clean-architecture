@@ -22,10 +22,10 @@ public class BaseEntity
     /// <summary>
     /// Fecha y hora en la que la entidad fue creada.
     /// </summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// Fecha y hora de la última actualización de la entidad.
     /// </summary>
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }

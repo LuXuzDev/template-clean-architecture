@@ -4,22 +4,20 @@ namespace Domain.Specifications.Users;
 
 public sealed class UserByIdSpecification : Specification<User>
 {
-    public UserByIdSpecification(string idString)
+    public UserByIdSpecification(Guid userId)
     {
-        var id = Guid.Parse(idString);
-        Criteria = u => u.Id == id;
+        Criteria = u => u.Id == userId;
 
         AddInclude(u => u.Role!);
         //Para hacen ThenInclude
-        //AddInclude(u => u.Roles.Select(r => r.Permissions));
+        /*
+        AddInclude(q => q
+        .Include(b => b.DishGroups)
+            .ThenInclude(dg => dg.Dishes)
+                .ThenInclude(d => d.DishImages));
+        */
     }
 
-    public UserByIdSpecification(Guid id)
-    {
-        Criteria = u => u.Id == id;
-
-        AddInclude(u => u.Role!);
-        //Para hacen ThenInclude
-        //AddInclude(u => u.Roles.Select(r => r.Permissions));
-    }
+    public UserByIdSpecification(string userIdString) :
+        this(Guid.Parse(userIdString)) { }
 }
